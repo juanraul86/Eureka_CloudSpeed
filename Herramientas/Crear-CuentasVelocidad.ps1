@@ -53,8 +53,16 @@ $entropy = [Text.Encoding]::UTF8.GetBytes('Eureka_CloudSpeed/velocidad/v1')
 function Protect-Url([string]$t) { 'dpapi:' + [Convert]::ToBase64String([Security.Cryptography.ProtectedData]::Protect([Text.Encoding]::UTF8.GetBytes($t), $entropy, 'CurrentUser')) }
 
 function Invoke-Az {
+    # Los avisos de az van a la salida de errores: no deben detener el script (solo el código de salida cuenta)
+    $ErrorActionPreference = 'Continue'
     $out = & az @args 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "az $($args[0..2] -join ' ') … falló:`n$(($out | Out-String).Trim())" }
+    if ($LASTEXITCODE -ne 0) {
+        $txt = ($out | Out-String).Trim()
+        if ($txt -match 'locationineligible|not accepting new customers') {
+            throw "Azure no admite clientes nuevos en esa región para esta suscripción. Prueba otra (por ejemplo -Regiones spaincentral o swedencentral)."
+        }
+        throw "az $($args[0..2] -join ' ') … falló:`n$txt"
+    }
     return ($out | Where-Object { $_ -is [string] }) -join "`n"
 }
 
@@ -106,7 +114,13 @@ try { $acct = Invoke-Az account show -o json | ConvertFrom-Json } catch { }
 if (-not $acct -or ($Tenant -and $acct.tenantId -ne $Tenant -and $acct.tenantDefaultDomain -ne $Tenant)) {
     Write-Host ('Inicia sesión en Azure en el navegador' + $(if ($Tenant) { " (directorio $Tenant)" }) + '…') -ForegroundColor Yellow
     $loginArgs = @('login', '-o', 'none'); if ($Tenant) { $loginArgs += @('--tenant', $Tenant) }
-    Invoke-Az @loginArgs | Out-Null
+    try { Invoke-Az @loginArgs | Out-Null }
+    catch {
+        if ($_.Exception.Message -match 'No subscriptions found') {
+            throw "Has iniciado sesión, pero ningún directorio de tu cuenta tiene una suscripción de Azure. Créala en el portal (Suscripciones > Agregar: evaluación gratuita o pago por uso) o indica otro directorio con -Tenant."
+        }
+        throw
+    }
     try { $acct = Invoke-Az account show -o json | ConvertFrom-Json }
     catch { throw 'Has iniciado sesión, pero ese directorio no tiene ninguna suscripción de Azure. Crea una (Suscripciones > Agregar) o indica otro directorio con -Tenant.' }
 }
@@ -166,6 +180,12 @@ switch ($PSCmdlet.ParameterSetName) {
 }
 
 # ------------------------------------------------------------------ crear
+# Las suscripciones recién creadas no tienen registrado el proveedor de almacenamiento
+# (Azure responde "SubscriptionNotFound" al crear la cuenta). Registrarlo es gratuito y solo hace falta una vez.
+if ((Invoke-Az provider show -n Microsoft.Storage --query registrationState -o tsv).Trim() -ne 'Registered') {
+    Write-Host 'Registrando el proveedor Microsoft.Storage en la suscripción (solo la primera vez, ~1 min)…'
+    Invoke-Az provider register -n Microsoft.Storage --wait -o none | Out-Null
+}
 Write-Host "Grupo de recursos: $GrupoRecursos ($($Regiones[0]))"
 Invoke-Az group create --name $GrupoRecursos --location $Regiones[0] --tags app=Eureka_CloudSpeed -o none | Out-Null
 

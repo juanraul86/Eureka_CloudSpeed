@@ -66,24 +66,36 @@ try {
 }
 catch { Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red }
 finally {
+    # Las CLI escriben avisos por la salida de errores: aquí no deben interrumpir la limpieza
+    $ErrorActionPreference = 'Continue'
     if ($created) {
-        Write-Step "Borrando todo lo creado en $Nube"
-        try { & $ps -NoProfile -ExecutionPolicy Bypass -File $create -Eliminar -Confirmar | Out-Host } catch { Write-Host "ERROR al borrar: $($_.Exception.Message)" -ForegroundColor Red }
-        Write-Step 'Comprobando que no queda nada que genere cargos'
-        if ($Nube -eq 'AWS') {
-            $left = (& aws s3api list-buckets --query "Buckets[?starts_with(Name,'cspeed-')].Name" --output text 2>&1) -join ' '
-            if ($left.Trim()) { Write-Host "ATENCIÓN: siguen existiendo buckets: $left. Bórralos con: Crear-BucketsVelocidad.ps1 -Eliminar" -ForegroundColor Red }
-            else { Write-Host 'AWS: no queda ningún bucket de prueba.' -ForegroundColor Green }
+        # Sin sesión iniciada no se ha podido crear nada (y borrar pediría otro inicio de sesión)
+        if ($Nube -eq 'AWS') { & aws sts get-caller-identity 2>&1 | Out-Null } else { & az account show 2>&1 | Out-Null }
+        $session = $LASTEXITCODE -eq 0
+        if (-not $session) {
+            Write-Step 'Sin sesión en la nube: no se ha creado nada, no hay nada que borrar'
         }
         else {
-            $exists = (& az group exists --name $GrupoRecursos 2>&1) -join ''
-            if ($exists -eq 'true') {
-                Write-Host "Esperando a que Azure termine de borrar $GrupoRecursos…"
-                & az group wait --deleted --name $GrupoRecursos --timeout 900 2>&1 | Out-Null
-                $exists = (& az group exists --name $GrupoRecursos 2>&1) -join ''
+            Write-Step "Borrando todo lo creado en $Nube"
+            try { & $ps -NoProfile -ExecutionPolicy Bypass -File $create -Eliminar -Confirmar | Out-Host } catch { Write-Host "ERROR al borrar: $($_.Exception.Message)" -ForegroundColor Red }
+            Write-Step 'Comprobando que no queda nada que genere cargos'
+            if ($Nube -eq 'AWS') {
+                $left = ((& aws s3api list-buckets --query "Buckets[?starts_with(Name,'cspeed-')].Name" --output text 2>&1) | Out-String).Trim()
+                if ($LASTEXITCODE -ne 0) { Write-Host "No se pudo comprobar: $left" -ForegroundColor Yellow }
+                elseif ($left) { Write-Host "ATENCIÓN: siguen existiendo buckets: $left. Bórralos con: Crear-BucketsVelocidad.ps1 -Eliminar" -ForegroundColor Red }
+                else { Write-Host 'AWS: no queda ningún bucket de prueba.' -ForegroundColor Green }
             }
-            if ($exists -eq 'true') { Write-Host "ATENCIÓN: el grupo $GrupoRecursos sigue existiendo. Bórralo con: Crear-CuentasVelocidad.ps1 -Eliminar" -ForegroundColor Red }
-            else { Write-Host 'Azure: el grupo de recursos de prueba ya no existe.' -ForegroundColor Green }
+            else {
+                $exists = ((& az group exists --name $GrupoRecursos 2>&1) | Out-String).Trim()
+                if ($exists -eq 'true') {
+                    Write-Host "Esperando a que Azure termine de borrar $GrupoRecursos…"
+                    & az group wait --deleted --name $GrupoRecursos --timeout 900 2>&1 | Out-Null
+                    $exists = ((& az group exists --name $GrupoRecursos 2>&1) | Out-String).Trim()
+                }
+                if ($exists -eq 'true') { Write-Host "ATENCIÓN: el grupo $GrupoRecursos sigue existiendo. Bórralo con: Crear-CuentasVelocidad.ps1 -Eliminar" -ForegroundColor Red }
+                elseif ($exists -eq 'false') { Write-Host 'Azure: el grupo de recursos de prueba ya no existe.' -ForegroundColor Green }
+                else { Write-Host "No se pudo comprobar: $exists" -ForegroundColor Yellow }
+            }
         }
     }
 }

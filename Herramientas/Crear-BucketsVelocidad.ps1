@@ -47,6 +47,8 @@ function Protect-Url([string]$t) { 'dpapi:' + [Convert]::ToBase64String([Securit
 
 $awsBase = @(); if ($Perfil) { $awsBase = @('--profile', $Perfil) }
 function Invoke-Aws {
+    # Los avisos de aws van a la salida de errores: no deben detener el script (solo el código de salida cuenta)
+    $ErrorActionPreference = 'Continue'
     $out = & aws @awsBase @args 2>&1
     if ($LASTEXITCODE -ne 0) { throw "aws $($args[0..1] -join ' ') … falló:`n$(($out | Out-String).Trim())" }
     return ($out | Where-Object { $_ -is [string] }) -join "`n"

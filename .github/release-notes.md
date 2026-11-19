@@ -14,4 +14,7 @@ Herramienta portable y de código abierto para Windows que mide **desde tu equip
 
 Si Smart App Control bloquea el .exe porque todavía no está firmado, usa `Eureka_CloudSpeed.cmd` del código fuente.
 
+### Firma de código
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org) (solicitud en trámite). Los ejecutables se compilan, prueban y firman en GitHub Actions a partir de este repositorio; hasta que se apruebe la solicitud se publican sin firmar. Política completa: [README](https://github.com/juanraul86/Eureka_CloudSpeed#pol%C3%ADtica-de-firma-de-c%C3%B3digo-code-signing-policy).
+
 Documentación: [manual de uso](Docs/Manual-de-usuario.html), [documentación técnica](Docs/Documentacion-tecnica.html), [bitácora](Docs/Bitacora-de-versiones.html) y [revisión de seguridad](Docs/Revision-seguridad-y-confidencialidad.html).

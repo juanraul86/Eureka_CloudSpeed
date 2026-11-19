@@ -2,6 +2,14 @@
 
 La bitácora completa (con lo que se publica en cada versión y el registro de operaciones en la nube) está en [`Docs/Bitacora-de-versiones.html`](Docs/Bitacora-de-versiones.html). Cada compilación deja en `Dist/MANIFIESTO-v<versión>.txt` las huellas SHA-256 y la lista de archivos publicados.
 
+## Sin publicar (irá en 1.3.1, la primera versión firmada)
+- Corrección: los avisos que Azure CLI y AWS CLI escriben por la salida de errores ya no detienen los scripts de `Herramientas/`.
+- Corrección: `Probar-Velocidad.ps1` no intenta borrar ni pide otro inicio de sesión si no llegó a haber sesión; siempre pregunta por la sesión al final.
+- Mensaje claro cuando la cuenta de Azure no tiene ninguna suscripción.
+- `Crear-CuentasVelocidad.ps1` registra el proveedor `Microsoft.Storage` en suscripciones nuevas (antes fallaba con «SubscriptionNotFound»).
+- Mensaje claro cuando una región de Azure no admite clientes nuevos (se propone otra región).
+- Privacidad: la bitácora ya no muestra datos de la cuenta de AWS de pruebas; el historial público se ha rehecho sin ellos.
+
 ## 1.3.0 · 19/11/2026
 - Nuevo: sección **Estado de servicios** (estado oficial de Microsoft, AWS, Google, GitHub y Cloudflare + comprobación propia desde la red + diagnóstico de caídas globales + histórico para SLA).
 - Nuevo: `Herramientas/Probar-Velocidad.ps1` (crea, mide y borra siempre; verifica que no queda nada).

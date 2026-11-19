@@ -164,7 +164,7 @@ Juan Raúl Ruiz · [LinkedIn](https://www.linkedin.com/in/juanraulruizbartran)
 
 ## Política de firma de código (Code signing policy)
 
-Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org) *(solicitud en trámite: hasta su aprobación, las releases se publican sin firmar)*.
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org) *(solicitud enviada el 19/11/2026, pendiente de aprobación: hasta entonces las releases se publican sin firmar)*.
 
 Firma de código gratuita proporcionada por SignPath.io, certificado de SignPath Foundation.
 
