@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Power BI · Eureka_CloudSpeed</title>
+<style>
+:root{--bg:#F3F4F6;--sf:#fff;--bd:#E5E7EB;--tx:#1F2937;--mu:#6B7280;--ac:#0F6CBD;--code:#F3F4F6}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--sf:#1B1E25;--bd:#2D323C;--tx:#E6E8EC;--mu:#9AA3B2;--ac:#3B8EE0;--code:#14171D}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Segoe UI",system-ui,sans-serif}
+header{background:var(--ac);color:#fff;padding:20px 24px}header h1{margin:0;font-size:24px}header p{margin:4px 0 0;opacity:.88}
+main{max-width:920px;margin:0 auto;padding:20px 16px 48px}
+section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:18px 22px;margin-bottom:16px}
+h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:16px 0 6px}
+code,pre{background:var(--code);border:1px solid var(--bd);border-radius:4px;font:13px Consolas,monospace}
+code{padding:1px 5px}pre{padding:10px 12px;overflow-x:auto;white-space:pre}
+table{border-collapse:collapse;width:100%}th,td{border-bottom:1px solid var(--bd);padding:6px 8px;text-align:left;vertical-align:top}th{color:var(--mu);font-size:13px}
+.note{border-left:3px solid #F59E0B;padding:6px 12px;background:rgba(245,158,11,.08);border-radius:4px}
+small,.mu{color:var(--mu)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Analizar la latencia en Power BI Desktop</h1>
+  <p>Eureka_CloudSpeed · funciona con la versión gratuita de Power BI Desktop</p>
+</header>
+<main>
+
+<section>
+  <h2>Qué contiene esta carpeta</h2>
+  <table>
+    <tr><th>Archivo</th><th>Para qué sirve</th></tr>
+    <tr><td><code>Eureka_CloudSpeed_PowerBI.xlsx</code></td><td>Todo el histórico de mediciones en tres tablas de Excel: <b>Mediciones</b>, <b>Regiones</b> (con latitud y longitud) y <b>Sesiones</b>. Se sobrescribe en la misma ruta cada vez que pulsas <i>Power BI (histórico)</i>.</td></tr>
+    <tr><td><code>Abrir_en_Power_BI.pbids</code></td><td>Doble clic: abre Power BI Desktop conectado al libro anterior.</td></tr>
+    <tr><td><code>Medidas.dax</code></td><td>Medidas listas para pegar (P50, P95, pérdida, mejor región, color por latencia…).</td></tr>
+    <tr><td><code>Consultas.pq</code></td><td>Alternativa: consultas de Power Query que leen directamente los CSV de la carpeta <code>Datos</code>, sin volver a exportar.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>1. Cargar los datos</h2>
+  <ol>
+    <li>Instala <b>Power BI Desktop</b> (gratuito, desde Microsoft Store o la web de Microsoft).</li>
+    <li>Haz doble clic en <code>Abrir_en_Power_BI.pbids</code>. Si no se abre, en Power BI Desktop usa <b>Obtener datos &gt; Libro de Excel</b> y elige <code>Eureka_CloudSpeed_PowerBI.xlsx</code>.</li>
+    <li>En el navegador marca las <b>tablas</b> <code>Mediciones</code>, <code>Regiones</code> y <code>Sesiones</code> (las del icono de tabla, no las hojas) y pulsa <b>Cargar</b>.</li>
+    <li>En la vista de <b>Modelo</b> comprueba (o crea arrastrando) las relaciones:
+      <ul>
+        <li><code>Mediciones[Clave]</code> → <code>Regiones[Clave]</code> (varios a uno)</li>
+        <li><code>Mediciones[SesionId]</code> → <code>Sesiones[SesionId]</code> (varios a uno)</li>
+      </ul>
+    </li>
+  </ol>
+  <p class="mu">Para actualizar: mide de nuevo, pulsa <i>Power BI (histórico)</i> en Eureka_CloudSpeed y después <b>Inicio &gt; Actualizar</b> en Power BI Desktop. Si usas <code>Consultas.pq</code>, basta con <b>Actualizar</b>.</p>
+</section>
+
+<section>
+  <h2>2. Crear las medidas</h2>
+  <p>Selecciona la tabla <code>Mediciones</code> &gt; <b>Inicio &gt; Nueva medida</b> y pega cada medida de <code>Medidas.dax</code>. Las principales:</p>
+<pre>Latencia P50 (ms) = CALCULATE ( PERCENTILE.INC ( Mediciones[TCP_ms], 0.5 ), Mediciones[Correcto] = TRUE () )
+Latencia P95 (ms) = CALCULATE ( PERCENTILE.INC ( Mediciones[TCP_ms], 0.95 ), Mediciones[Correcto] = TRUE () )
+Pérdida % = DIVIDE ( CALCULATE ( COUNTROWS ( Mediciones ), Mediciones[Correcto] = FALSE () ), COUNTROWS ( Mediciones ) )</pre>
+  <p class="mu">Usa la mediana (P50) en lugar de la media: un pico puntual no la distorsiona. El P95 indica cómo de estable es la conexión.</p>
+</section>
+
+<section>
+  <h2>3. Visuales recomendados</h2>
+  <table>
+    <tr><th>Visual</th><th>Campos</th></tr>
+    <tr><td>Gráfico de barras agrupadas (ranking)</td><td>Eje Y: <code>Regiones[Región]</code> · Eje X: <code>Latencia P50 (ms)</code> · Leyenda: <code>Regiones[Nube]</code>. Ordena de menor a mayor. Opcional: color con formato condicional usando <code>Color latencia</code>.</td></tr>
+    <tr><td>Gráfico de líneas (evolución)</td><td>Eje X: <code>Mediciones[FechaHora]</code> · Eje Y: <code>Latencia P50 (ms)</code> · Leyenda: <code>Regiones[Región]</code>. Filtra las 5 primeras con <i>N superior</i>.</td></tr>
+    <tr><td>Mapa</td><td>Latitud: <code>Regiones[Latitud]</code> · Longitud: <code>Regiones[Longitud]</code> · Tamaño: <code>Muestras</code> · Información sobre herramientas: <code>Latencia P50 (ms)</code>. Color: <code>Color latencia</code>.</td></tr>
+    <tr><td>Matriz (Azure frente a AWS)</td><td>Filas: <code>Regiones[Geografía]</code> · Columnas: <code>Regiones[Nube]</code> · Valores: <code>Mejor P50 (ms)</code> y <code>Mejor región</code>.</td></tr>
+    <tr><td>Tarjetas</td><td><code>Mejor región</code>, <code>Mejor P50 (ms)</code>, <code>Pérdida %</code>, <code>Muestras</code>.</td></tr>
+    <tr><td>Segmentaciones</td><td><code>Mediciones[Etiqueta]</code> (oficina, casa, VPN…), <code>Mediciones[Equipo]</code>, <code>Mediciones[Fecha]</code>, <code>Regiones[Nube]</code>, <code>Regiones[Geografía]</code>.</td></tr>
+  </table>
+  <p class="note">El visual de <b>Mapa</b> puede venir desactivado: actívalo en <b>Archivo &gt; Opciones y configuración &gt; Opciones &gt; Seguridad &gt; Usar los objetos visuales de mapa y mapa coroplético</b>. Envía las coordenadas a Bing Maps para dibujar el mapa.</p>
+</section>
+
+<section>
+  <h2>4. Acumular histórico automáticamente</h2>
+  <p>Para comparar horas del día o días de la semana, programa mediciones con el Programador de tareas de Windows usando el modo sin interfaz. Cada ejecución añade sus resultados a la carpeta <code>Datos</code>:</p>
+<pre>Eureka_CloudSpeed.cmd -SinInterfaz -Etiqueta "Oficina" -Muestras 5
+Eureka_CloudSpeed.cmd -SinInterfaz -Geografia Europa -Rondas 12 -Intervalo 300 -Exportar PowerBI</pre>
+  <p class="mu">La etiqueta te permite comparar redes (fibra, 4G, VPN…) con la segmentación de <code>Etiqueta</code>.</p>
+</section>
+
+<section>
+  <h2>Qué permite la versión gratuita</h2>
+  <ul>
+    <li><b>Sí</b>: crear y usar el informe en Power BI Desktop, actualizar los datos y guardar el archivo <code>.pbix</code> para enviárselo a quien también tenga Power BI Desktop.</li>
+    <li><b>No</b>: compartir el informe en el servicio de Power BI (powerbi.com) con otras personas ni programar actualizaciones en la nube; para eso hace falta una licencia Pro, Premium por usuario o capacidad Fabric.</li>
+    <li><b>Cuidado</b> con <i>Publicar en la web</i>: hace el informe público en Internet para cualquiera que tenga el enlace.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

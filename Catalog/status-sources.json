@@ -1,0 +1,38 @@
+{
+ "description": "Fuentes de la sección Estado de servicios. 'official': páginas de estado públicas de cada proveedor (type indica cómo se interpreta). 'probes': comprobaciones propias desde la red de este equipo (DNS + TCP + HTTPS). Cualquier respuesta HTTP < 500 cuenta como 'responde' (un 401 o un 302 es normal en un inicio de sesión).",
+ "official": [
+  {"provider": "Microsoft Azure", "service": "Azure (global)", "type": "mspost", "url": "https://status.cloud.microsoft/api/posts/azure", "page": "https://azure.status.microsoft/es-es/status"},
+  {"provider": "Microsoft Azure", "service": "Incidencias de Azure (RSS)", "type": "rss", "url": "https://azure.status.microsoft/en-us/status/feed/", "page": "https://azure.status.microsoft/es-es/status"},
+  {"provider": "Microsoft 365", "service": "Microsoft 365 empresarial", "type": "mspost", "url": "https://status.cloud.microsoft/api/posts/mac", "page": "https://status.cloud.microsoft/"},
+  {"provider": "Microsoft 365", "service": "Microsoft 365 consumo", "type": "mslist", "url": "https://status.cloud.microsoft/api/posts/m365Consumer", "page": "https://status.cloud.microsoft/"},
+  {"provider": "Microsoft 365", "service": "Power Platform", "type": "mspost", "url": "https://status.cloud.microsoft/api/posts/ppac", "page": "https://status.cloud.microsoft/"},
+  {"provider": "Microsoft Azure", "service": "Azure DevOps", "type": "devops", "url": "https://status.dev.azure.com/_apis/status/health?api-version=7.1-preview.1", "page": "https://status.dev.azure.com/"},
+  {"provider": "AWS", "service": "AWS Health Dashboard", "type": "aws", "url": "https://health.aws.amazon.com/public/currentevents", "page": "https://health.aws.amazon.com/health/status"},
+  {"provider": "Google", "service": "Google Cloud", "type": "google", "url": "https://status.cloud.google.com/incidents.json", "page": "https://status.cloud.google.com/"},
+  {"provider": "Google", "service": "Google Workspace", "type": "google", "url": "https://www.google.com/appsstatus/dashboard/incidents.json", "page": "https://www.google.com/appsstatus/dashboard/"},
+  {"provider": "GitHub", "service": "GitHub", "type": "statuspage", "url": "https://www.githubstatus.com/api/v2/summary.json", "page": "https://www.githubstatus.com/"},
+  {"provider": "Cloudflare", "service": "Cloudflare (CDN y DNS)", "type": "statuspage", "url": "https://www.cloudflarestatus.com/api/v2/summary.json", "page": "https://www.cloudflarestatus.com/"}
+ ],
+ "probes": [
+  {"provider": "Microsoft Azure", "service": "Inicio de sesión (Entra ID)", "url": "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration"},
+  {"provider": "Microsoft Azure", "service": "Portal de Azure", "url": "https://portal.azure.com/"},
+  {"provider": "Microsoft Azure", "service": "Azure Resource Manager", "url": "https://management.azure.com/"},
+  {"provider": "Microsoft Azure", "service": "Página de estado de Azure", "url": "https://azure.status.microsoft/en-us/status"},
+  {"provider": "Microsoft Azure", "service": "Azure DevOps", "url": "https://dev.azure.com/"},
+  {"provider": "Microsoft 365", "service": "Microsoft Graph", "url": "https://graph.microsoft.com/v1.0/"},
+  {"provider": "Microsoft 365", "service": "Outlook / Exchange Online", "url": "https://outlook.office365.com/"},
+  {"provider": "Microsoft 365", "service": "Teams", "url": "https://teams.microsoft.com/"},
+  {"provider": "Microsoft 365", "service": "Portal de Microsoft 365", "url": "https://www.office.com/"},
+  {"provider": "Microsoft 365", "service": "Centro de administración", "url": "https://admin.microsoft.com/"},
+  {"provider": "Microsoft 365", "service": "Página de estado de Microsoft", "url": "https://status.cloud.microsoft/"},
+  {"provider": "AWS", "service": "Inicio de sesión de AWS", "url": "https://signin.aws.amazon.com/"},
+  {"provider": "AWS", "service": "Consola de AWS", "url": "https://console.aws.amazon.com/"},
+  {"provider": "AWS", "service": "AWS STS (credenciales)", "url": "https://sts.amazonaws.com/"},
+  {"provider": "AWS", "service": "Amazon S3", "url": "https://s3.amazonaws.com/"},
+  {"provider": "AWS", "service": "Página de estado de AWS", "url": "https://health.aws.amazon.com/health/status"},
+  {"provider": "Google", "service": "Inicio de sesión de Google", "url": "https://accounts.google.com/"},
+  {"provider": "Google", "service": "Consola de Google Cloud", "url": "https://console.cloud.google.com/"},
+  {"provider": "GitHub", "service": "GitHub", "url": "https://github.com/"},
+  {"provider": "Referencia", "service": "Internet (control)", "url": "https://www.wikipedia.org/"}
+ ]
+}

@@ -1,0 +1,111 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid.ColumnDefinitions>
+    <ColumnDefinition Width="320"/>
+    <ColumnDefinition Width="16"/>
+    <ColumnDefinition Width="*"/>
+  </Grid.ColumnDefinitions>
+
+  <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+      <GroupBox Header="Región y modo">
+        <StackPanel>
+          <Label Content="Región (endpoints configurados)"/>
+          <ComboBox x:Name="CmbSpeedRegion"/>
+          <TextBlock x:Name="TxtSpeedNoEp" Style="{StaticResource Muted}" Margin="0,6,0,0" Visibility="Collapsed"
+                     Text="Todavía no hay endpoints de velocidad. Crea las cuentas de almacenamiento con el script o escribe tus URL en la configuración."/>
+          <Label Content="Conexiones" Margin="0,10,0,0"/>
+          <StackPanel Orientation="Horizontal">
+            <RadioButton x:Name="RbSpeedSingle" Content="Una" GroupName="SpMode"/>
+            <RadioButton x:Name="RbSpeedMulti" Content="Varias (4)" GroupName="SpMode" IsChecked="True"/>
+          </StackPanel>
+          <DockPanel Margin="0,8,0,0">
+            <TextBlock x:Name="TxtSpeedSecs" DockPanel.Dock="Right" FontWeight="SemiBold" Text="12 s"/>
+            <TextBlock Text="Duración de cada etapa" Style="{StaticResource Muted}"/>
+          </DockPanel>
+          <Slider x:Name="SldSpeedSecs" Minimum="5" Maximum="30" Value="12" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,4,0,8"/>
+          <DockPanel>
+            <TextBlock x:Name="TxtSpeedCap" DockPanel.Dock="Right" FontWeight="SemiBold" Text="200 MiB"/>
+            <TextBlock Text="Datos máximos por etapa" Style="{StaticResource Muted}"/>
+          </DockPanel>
+          <Slider x:Name="SldSpeedCap" Minimum="50" Maximum="2000" Value="200" IsSnapToTickEnabled="True" TickFrequency="50" Margin="0,4,0,8"/>
+          <TextBlock Text="Etapas" Style="{StaticResource Muted}"/>
+          <WrapPanel>
+            <CheckBox x:Name="ChkSpLat" Content="Latencia" IsChecked="True"/>
+            <CheckBox x:Name="ChkSpDown" Content="Descarga" IsChecked="True"/>
+            <CheckBox x:Name="ChkSpUp" Content="Subida" IsChecked="True"/>
+          </WrapPanel>
+          <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+            <Button x:Name="BtnSpeedStart" Style="{StaticResource PrimaryButton}" Content="▶  Iniciar test" Padding="16,7"/>
+            <Button x:Name="BtnSpeedStop" Style="{StaticResource DangerButton}" Content="Detener" IsEnabled="False"/>
+          </StackPanel>
+        </StackPanel>
+      </GroupBox>
+
+      <GroupBox Header="Subir un archivo">
+        <StackPanel>
+          <TextBlock Style="{StaticResource Muted}" Text="Mide la subida real de un archivo tuyo a la región elegida. Usa datos que no sean confidenciales: el archivo se envía a tu cuenta y se borra al terminar."/>
+          <Button x:Name="BtnSpeedFile" Content="Elegir archivo y subir…" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+          <TextBlock x:Name="TxtSpeedFile" Style="{StaticResource Muted}" Text=""/>
+        </StackPanel>
+      </GroupBox>
+
+      <GroupBox Header="Endpoints de velocidad">
+        <StackPanel>
+          <TextBlock Style="{StaticResource Muted}" Text="La descarga y la subida necesitan almacenamiento tuyo en cada región: cuentas de Azure Storage o buckets de S3, creados con los scripts incluidos (céntimos al mes más el tráfico de salida). Las URL se guardan cifradas para tu usuario."/>
+          <Button x:Name="BtnSpeedScript" Content="Crear cuentas en Azure (script)…" HorizontalAlignment="Stretch" Margin="0,8,0,6"/>
+          <Button x:Name="BtnSpeedScriptAws" Content="Crear buckets en AWS (script)…" HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+          <WrapPanel>
+            <Button x:Name="BtnSpeedConfig" Content="Editar configuración" Padding="10,4"/>
+            <Button x:Name="BtnSpeedReload" Content="Recargar" Padding="10,4"/>
+          </WrapPanel>
+        </StackPanel>
+      </GroupBox>
+    </StackPanel>
+  </ScrollViewer>
+
+  <DockPanel Grid.Column="2">
+    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+      <TextBlock Style="{StaticResource PageTitle}" Text="Test de velocidad"/>
+      <TextBlock Style="{StaticResource Muted}" Text="Latencia, jitter, descarga y subida a una región, con la latencia medida mientras la conexión está cargada."/>
+    </StackPanel>
+    <UniformGrid DockPanel.Dock="Top" Columns="4" Margin="0,0,0,10">
+      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="Latencia" Style="{StaticResource Muted}"/><TextBlock x:Name="SpLat" Text="— ms" FontSize="22" FontWeight="SemiBold"/><TextBlock x:Name="SpJit" Text="jitter —" Style="{StaticResource Muted}"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="Descarga" Style="{StaticResource Muted}"/><TextBlock x:Name="SpDown" Text="— Mbps" FontSize="22" FontWeight="SemiBold"/><TextBlock x:Name="SpDownSub" Text=" " Style="{StaticResource Muted}"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="Subida" Style="{StaticResource Muted}"/><TextBlock x:Name="SpUp" Text="— Mbps" FontSize="22" FontWeight="SemiBold"/><TextBlock x:Name="SpUpSub" Text=" " Style="{StaticResource Muted}"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Margin="0"><StackPanel><TextBlock Text="Etapa" Style="{StaticResource Muted}"/><TextBlock x:Name="SpStage" Text="Esperando" FontSize="22" FontWeight="SemiBold"/><TextBlock x:Name="SpStageSub" Text=" " Style="{StaticResource Muted}"/></StackPanel></Border>
+    </UniformGrid>
+    <ProgressBar x:Name="SpProgress" DockPanel.Dock="Top" Maximum="1" Margin="0,0,0,8"/>
+    <Border DockPanel.Dock="Bottom" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6" Height="210" Margin="0,10,0,0">
+      <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="12,8">
+          <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+            <Button x:Name="BtnSpeedCsv" Content="Exportar CSV" Padding="10,3" Margin="0"/>
+          </StackPanel>
+          <TextBlock Text="Historial de tests" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        </DockPanel>
+        <DataGrid x:Name="GridSpeed">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Fecha" Binding="{Binding Time, StringFormat={}{0:dd/MM HH:mm:ss}}" Width="110" MinWidth="110"/>
+            <DataGridTextColumn Header="Región" Binding="{Binding Region}" Width="*" MinWidth="170"/>
+            <DataGridTextColumn Header="Modo" Binding="{Binding Mode}" Width="140" MinWidth="140"/>
+            <DataGridTextColumn Header="Latencia" Binding="{Binding LatencyMs, StringFormat={}{0:0.0} ms}" Width="80" MinWidth="80" ElementStyle="{StaticResource Num}"/>
+            <DataGridTextColumn Header="Jitter" Binding="{Binding JitterMs, StringFormat={}{0:0.0} ms}" Width="70" MinWidth="70" ElementStyle="{StaticResource Num}"/>
+            <DataGridTextColumn Header="Descarga" Binding="{Binding DownMbps, StringFormat={}{0:0.0} Mbps}" Width="100" MinWidth="100" ElementStyle="{StaticResource Num}"/>
+            <DataGridTextColumn Header="Subida" Binding="{Binding UpMbps, StringFormat={}{0:0.0} Mbps}" Width="100" MinWidth="100" ElementStyle="{StaticResource Num}"/>
+            <DataGridTextColumn Header="Lat. con carga" Binding="{Binding DownLatencyMs, StringFormat={}{0:0} ms}" Width="100" MinWidth="100" ElementStyle="{StaticResource Num}"/>
+            <DataGridTextColumn Header="Datos" Binding="{Binding DownMiB, StringFormat={}{0:0} MiB}" Width="70" MinWidth="70" ElementStyle="{StaticResource Num}"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
+    </Border>
+    <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6">
+      <DockPanel>
+        <TextBox x:Name="TxtSpeedLog" DockPanel.Dock="Bottom" Style="{StaticResource Code}" Height="58" VerticalScrollBarVisibility="Auto" BorderThickness="0,1,0,0" FontSize="12"/>
+        <Grid x:Name="HostSpeed" Margin="14,10">
+          <Canvas x:Name="CanvasSpeed" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+      </DockPanel>
+    </Border>
+  </DockPanel>
+</Grid>

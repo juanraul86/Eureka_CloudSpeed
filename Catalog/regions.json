@@ -1,0 +1,982 @@
+{
+ "version": 1,
+ "description": "Catálogo de regiones de Eureka_CloudSpeed. Sin 'host' se usa el patrón de la nube; 'host' vacío = región sin endpoint público (no se mide hasta que pongas uno).",
+ "clouds": {
+  "Azure": {
+   "hostPattern": "{code}.api.cognitive.microsoft.com",
+   "port": 443,
+   "color": "#2F80ED",
+   "method": "Endpoint regional de Azure AI services (TCP 443)"
+  },
+  "AWS": {
+   "hostPattern": "dynamodb.{code}.amazonaws.com",
+   "port": 443,
+   "color": "#F59E0B",
+   "method": "Endpoint regional de Amazon DynamoDB (TCP 443)"
+  }
+ },
+ "geographies": [
+  "Europa",
+  "Norteamérica",
+  "Sudamérica",
+  "Asia-Pacífico",
+  "Oriente Medio",
+  "África"
+ ],
+ "regions": [
+  {
+   "cloud": "Azure",
+   "code": "eastus",
+   "name": "East US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Virginia",
+   "lat": 37.43,
+   "lon": -78.66
+  },
+  {
+   "cloud": "Azure",
+   "code": "eastus2",
+   "name": "East US 2",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Virginia",
+   "lat": 36.67,
+   "lon": -78.39
+  },
+  {
+   "cloud": "Azure",
+   "code": "centralus",
+   "name": "Central US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Iowa",
+   "lat": 41.59,
+   "lon": -93.62
+  },
+  {
+   "cloud": "Azure",
+   "code": "northcentralus",
+   "name": "North Central US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Illinois",
+   "lat": 41.88,
+   "lon": -87.63
+  },
+  {
+   "cloud": "Azure",
+   "code": "southcentralus",
+   "name": "South Central US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Texas",
+   "lat": 29.42,
+   "lon": -98.49
+  },
+  {
+   "cloud": "Azure",
+   "code": "westcentralus",
+   "name": "West Central US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Wyoming",
+   "lat": 41.14,
+   "lon": -104.82
+  },
+  {
+   "cloud": "Azure",
+   "code": "westus",
+   "name": "West US",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "California",
+   "lat": 37.78,
+   "lon": -122.42
+  },
+  {
+   "cloud": "Azure",
+   "code": "westus2",
+   "name": "West US 2",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Washington",
+   "lat": 47.23,
+   "lon": -119.85
+  },
+  {
+   "cloud": "Azure",
+   "code": "westus3",
+   "name": "West US 3",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Arizona",
+   "lat": 33.45,
+   "lon": -112.07
+  },
+  {
+   "cloud": "Azure",
+   "code": "canadacentral",
+   "name": "Canada Central",
+   "geo": "Norteamérica",
+   "country": "Canadá",
+   "city": "Toronto",
+   "lat": 43.65,
+   "lon": -79.38
+  },
+  {
+   "cloud": "Azure",
+   "code": "canadaeast",
+   "name": "Canada East",
+   "geo": "Norteamérica",
+   "country": "Canadá",
+   "city": "Quebec",
+   "lat": 46.82,
+   "lon": -71.22
+  },
+  {
+   "cloud": "Azure",
+   "code": "mexicocentral",
+   "name": "Mexico Central",
+   "geo": "Norteamérica",
+   "country": "México",
+   "city": "Querétaro",
+   "lat": 20.59,
+   "lon": -100.39,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "brazilsouth",
+   "name": "Brazil South",
+   "geo": "Sudamérica",
+   "country": "Brasil",
+   "city": "São Paulo",
+   "lat": -23.55,
+   "lon": -46.63
+  },
+  {
+   "cloud": "Azure",
+   "code": "brazilsoutheast",
+   "name": "Brazil Southeast",
+   "geo": "Sudamérica",
+   "country": "Brasil",
+   "city": "Río de Janeiro",
+   "lat": -22.91,
+   "lon": -43.17,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "chilecentral",
+   "name": "Chile Central",
+   "geo": "Sudamérica",
+   "country": "Chile",
+   "city": "Santiago",
+   "lat": -33.45,
+   "lon": -70.67,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "northeurope",
+   "name": "North Europe",
+   "geo": "Europa",
+   "country": "Irlanda",
+   "city": "Dublín",
+   "lat": 53.35,
+   "lon": -6.26
+  },
+  {
+   "cloud": "Azure",
+   "code": "westeurope",
+   "name": "West Europe",
+   "geo": "Europa",
+   "country": "Países Bajos",
+   "city": "Ámsterdam",
+   "lat": 52.37,
+   "lon": 4.9
+  },
+  {
+   "cloud": "Azure",
+   "code": "uksouth",
+   "name": "UK South",
+   "geo": "Europa",
+   "country": "Reino Unido",
+   "city": "Londres",
+   "lat": 51.51,
+   "lon": -0.13
+  },
+  {
+   "cloud": "Azure",
+   "code": "ukwest",
+   "name": "UK West",
+   "geo": "Europa",
+   "country": "Reino Unido",
+   "city": "Cardiff",
+   "lat": 51.48,
+   "lon": -3.18
+  },
+  {
+   "cloud": "Azure",
+   "code": "francecentral",
+   "name": "France Central",
+   "geo": "Europa",
+   "country": "Francia",
+   "city": "París",
+   "lat": 48.86,
+   "lon": 2.35
+  },
+  {
+   "cloud": "Azure",
+   "code": "francesouth",
+   "name": "France South",
+   "geo": "Europa",
+   "country": "Francia",
+   "city": "Marsella",
+   "lat": 43.3,
+   "lon": 5.37,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "germanywestcentral",
+   "name": "Germany West Central",
+   "geo": "Europa",
+   "country": "Alemania",
+   "city": "Fráncfort",
+   "lat": 50.11,
+   "lon": 8.68
+  },
+  {
+   "cloud": "Azure",
+   "code": "germanynorth",
+   "name": "Germany North",
+   "geo": "Europa",
+   "country": "Alemania",
+   "city": "Berlín",
+   "lat": 52.52,
+   "lon": 13.4,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "switzerlandnorth",
+   "name": "Switzerland North",
+   "geo": "Europa",
+   "country": "Suiza",
+   "city": "Zúrich",
+   "lat": 47.37,
+   "lon": 8.54
+  },
+  {
+   "cloud": "Azure",
+   "code": "switzerlandwest",
+   "name": "Switzerland West",
+   "geo": "Europa",
+   "country": "Suiza",
+   "city": "Ginebra",
+   "lat": 46.2,
+   "lon": 6.14
+  },
+  {
+   "cloud": "Azure",
+   "code": "norwayeast",
+   "name": "Norway East",
+   "geo": "Europa",
+   "country": "Noruega",
+   "city": "Oslo",
+   "lat": 59.91,
+   "lon": 10.75
+  },
+  {
+   "cloud": "Azure",
+   "code": "norwaywest",
+   "name": "Norway West",
+   "geo": "Europa",
+   "country": "Noruega",
+   "city": "Stavanger",
+   "lat": 58.97,
+   "lon": 5.73,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "swedencentral",
+   "name": "Sweden Central",
+   "geo": "Europa",
+   "country": "Suecia",
+   "city": "Gävle",
+   "lat": 60.67,
+   "lon": 17.14
+  },
+  {
+   "cloud": "Azure",
+   "code": "polandcentral",
+   "name": "Poland Central",
+   "geo": "Europa",
+   "country": "Polonia",
+   "city": "Varsovia",
+   "lat": 52.23,
+   "lon": 21.01
+  },
+  {
+   "cloud": "Azure",
+   "code": "italynorth",
+   "name": "Italy North",
+   "geo": "Europa",
+   "country": "Italia",
+   "city": "Milán",
+   "lat": 45.46,
+   "lon": 9.19
+  },
+  {
+   "cloud": "Azure",
+   "code": "spaincentral",
+   "name": "Spain Central",
+   "geo": "Europa",
+   "country": "España",
+   "city": "Madrid",
+   "lat": 40.42,
+   "lon": -3.7
+  },
+  {
+   "cloud": "Azure",
+   "code": "austriaeast",
+   "name": "Austria East",
+   "geo": "Europa",
+   "country": "Austria",
+   "city": "Viena",
+   "lat": 48.21,
+   "lon": 16.37,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "belgiumcentral",
+   "name": "Belgium Central",
+   "geo": "Europa",
+   "country": "Bélgica",
+   "city": "Bruselas",
+   "lat": 50.85,
+   "lon": 4.35,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "denmarkeast",
+   "name": "Denmark East",
+   "geo": "Europa",
+   "country": "Dinamarca",
+   "city": "Copenhague",
+   "lat": 55.68,
+   "lon": 12.57,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "uaenorth",
+   "name": "UAE North",
+   "geo": "Oriente Medio",
+   "country": "Emiratos Árabes Unidos",
+   "city": "Dubái",
+   "lat": 25.27,
+   "lon": 55.3
+  },
+  {
+   "cloud": "Azure",
+   "code": "uaecentral",
+   "name": "UAE Central",
+   "geo": "Oriente Medio",
+   "country": "Emiratos Árabes Unidos",
+   "city": "Abu Dabi",
+   "lat": 24.45,
+   "lon": 54.38,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "qatarcentral",
+   "name": "Qatar Central",
+   "geo": "Oriente Medio",
+   "country": "Catar",
+   "city": "Doha",
+   "lat": 25.29,
+   "lon": 51.53
+  },
+  {
+   "cloud": "Azure",
+   "code": "israelcentral",
+   "name": "Israel Central",
+   "geo": "Oriente Medio",
+   "country": "Israel",
+   "city": "Tel Aviv",
+   "lat": 32.09,
+   "lon": 34.78,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "southafricanorth",
+   "name": "South Africa North",
+   "geo": "África",
+   "country": "Sudáfrica",
+   "city": "Johannesburgo",
+   "lat": -26.2,
+   "lon": 28.05
+  },
+  {
+   "cloud": "Azure",
+   "code": "southafricawest",
+   "name": "South Africa West",
+   "geo": "África",
+   "country": "Sudáfrica",
+   "city": "Ciudad del Cabo",
+   "lat": -33.92,
+   "lon": 18.42,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "centralindia",
+   "name": "Central India",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Pune",
+   "lat": 18.52,
+   "lon": 73.86
+  },
+  {
+   "cloud": "Azure",
+   "code": "southindia",
+   "name": "South India",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Chennai",
+   "lat": 13.08,
+   "lon": 80.27
+  },
+  {
+   "cloud": "Azure",
+   "code": "westindia",
+   "name": "West India",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Bombay",
+   "lat": 19.08,
+   "lon": 72.88,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "jioindiawest",
+   "name": "Jio India West",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Jamnagar",
+   "lat": 22.47,
+   "lon": 70.06
+  },
+  {
+   "cloud": "Azure",
+   "code": "jioindiacentral",
+   "name": "Jio India Central",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Nagpur",
+   "lat": 21.15,
+   "lon": 79.09
+  },
+  {
+   "cloud": "Azure",
+   "code": "eastasia",
+   "name": "East Asia",
+   "geo": "Asia-Pacífico",
+   "country": "Hong Kong",
+   "city": "Hong Kong",
+   "lat": 22.32,
+   "lon": 114.17
+  },
+  {
+   "cloud": "Azure",
+   "code": "southeastasia",
+   "name": "Southeast Asia",
+   "geo": "Asia-Pacífico",
+   "country": "Singapur",
+   "city": "Singapur",
+   "lat": 1.35,
+   "lon": 103.82
+  },
+  {
+   "cloud": "Azure",
+   "code": "japaneast",
+   "name": "Japan East",
+   "geo": "Asia-Pacífico",
+   "country": "Japón",
+   "city": "Tokio",
+   "lat": 35.68,
+   "lon": 139.69
+  },
+  {
+   "cloud": "Azure",
+   "code": "japanwest",
+   "name": "Japan West",
+   "geo": "Asia-Pacífico",
+   "country": "Japón",
+   "city": "Osaka",
+   "lat": 34.69,
+   "lon": 135.5
+  },
+  {
+   "cloud": "Azure",
+   "code": "koreacentral",
+   "name": "Korea Central",
+   "geo": "Asia-Pacífico",
+   "country": "Corea del Sur",
+   "city": "Seúl",
+   "lat": 37.57,
+   "lon": 126.98
+  },
+  {
+   "cloud": "Azure",
+   "code": "koreasouth",
+   "name": "Korea South",
+   "geo": "Asia-Pacífico",
+   "country": "Corea del Sur",
+   "city": "Busan",
+   "lat": 35.18,
+   "lon": 129.08,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "australiaeast",
+   "name": "Australia East",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Sídney",
+   "lat": -33.87,
+   "lon": 151.21
+  },
+  {
+   "cloud": "Azure",
+   "code": "australiasoutheast",
+   "name": "Australia Southeast",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Melbourne",
+   "lat": -37.81,
+   "lon": 144.96,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "australiacentral",
+   "name": "Australia Central",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Canberra",
+   "lat": -35.28,
+   "lon": 149.13,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "australiacentral2",
+   "name": "Australia Central 2",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Canberra",
+   "lat": -35.31,
+   "lon": 149.12,
+   "host": "",
+   "note": "Sin endpoint público regional conocido. Para medirla, escribe en host una cuenta de almacenamiento propia de esa región (p. ej. micuenta.blob.core.windows.net)."
+  },
+  {
+   "cloud": "Azure",
+   "code": "newzealandnorth",
+   "name": "New Zealand North",
+   "geo": "Asia-Pacífico",
+   "country": "Nueva Zelanda",
+   "city": "Auckland",
+   "lat": -36.85,
+   "lon": 174.76
+  },
+  {
+   "cloud": "Azure",
+   "code": "indonesiacentral",
+   "name": "Indonesia Central",
+   "geo": "Asia-Pacífico",
+   "country": "Indonesia",
+   "city": "Yakarta",
+   "lat": -6.21,
+   "lon": 106.85
+  },
+  {
+   "cloud": "Azure",
+   "code": "malaysiawest",
+   "name": "Malaysia West",
+   "geo": "Asia-Pacífico",
+   "country": "Malasia",
+   "city": "Kuala Lumpur",
+   "lat": 3.14,
+   "lon": 101.69
+  },
+  {
+   "cloud": "AWS",
+   "code": "us-east-1",
+   "name": "US East (N. Virginia)",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Virginia del Norte",
+   "lat": 38.95,
+   "lon": -77.45
+  },
+  {
+   "cloud": "AWS",
+   "code": "us-east-2",
+   "name": "US East (Ohio)",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Ohio",
+   "lat": 39.96,
+   "lon": -83.0
+  },
+  {
+   "cloud": "AWS",
+   "code": "us-west-1",
+   "name": "US West (N. California)",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "California del Norte",
+   "lat": 37.35,
+   "lon": -121.96
+  },
+  {
+   "cloud": "AWS",
+   "code": "us-west-2",
+   "name": "US West (Oregon)",
+   "geo": "Norteamérica",
+   "country": "Estados Unidos",
+   "city": "Oregón",
+   "lat": 45.84,
+   "lon": -119.7
+  },
+  {
+   "cloud": "AWS",
+   "code": "ca-central-1",
+   "name": "Canada (Central)",
+   "geo": "Norteamérica",
+   "country": "Canadá",
+   "city": "Montreal",
+   "lat": 45.5,
+   "lon": -73.57
+  },
+  {
+   "cloud": "AWS",
+   "code": "ca-west-1",
+   "name": "Canada West (Calgary)",
+   "geo": "Norteamérica",
+   "country": "Canadá",
+   "city": "Calgary",
+   "lat": 51.05,
+   "lon": -114.07
+  },
+  {
+   "cloud": "AWS",
+   "code": "mx-central-1",
+   "name": "Mexico (Central)",
+   "geo": "Norteamérica",
+   "country": "México",
+   "city": "Querétaro",
+   "lat": 20.59,
+   "lon": -100.39
+  },
+  {
+   "cloud": "AWS",
+   "code": "sa-east-1",
+   "name": "South America (São Paulo)",
+   "geo": "Sudamérica",
+   "country": "Brasil",
+   "city": "São Paulo",
+   "lat": -23.55,
+   "lon": -46.63
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-west-1",
+   "name": "Europe (Ireland)",
+   "geo": "Europa",
+   "country": "Irlanda",
+   "city": "Dublín",
+   "lat": 53.35,
+   "lon": -6.26
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-west-2",
+   "name": "Europe (London)",
+   "geo": "Europa",
+   "country": "Reino Unido",
+   "city": "Londres",
+   "lat": 51.51,
+   "lon": -0.13
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-west-3",
+   "name": "Europe (Paris)",
+   "geo": "Europa",
+   "country": "Francia",
+   "city": "París",
+   "lat": 48.86,
+   "lon": 2.35
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-central-1",
+   "name": "Europe (Frankfurt)",
+   "geo": "Europa",
+   "country": "Alemania",
+   "city": "Fráncfort",
+   "lat": 50.11,
+   "lon": 8.68
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-central-2",
+   "name": "Europe (Zurich)",
+   "geo": "Europa",
+   "country": "Suiza",
+   "city": "Zúrich",
+   "lat": 47.37,
+   "lon": 8.54
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-south-1",
+   "name": "Europe (Milan)",
+   "geo": "Europa",
+   "country": "Italia",
+   "city": "Milán",
+   "lat": 45.46,
+   "lon": 9.19
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-south-2",
+   "name": "Europe (Spain)",
+   "geo": "Europa",
+   "country": "España",
+   "city": "Aragón",
+   "lat": 41.65,
+   "lon": -0.88
+  },
+  {
+   "cloud": "AWS",
+   "code": "eu-north-1",
+   "name": "Europe (Stockholm)",
+   "geo": "Europa",
+   "country": "Suecia",
+   "city": "Estocolmo",
+   "lat": 59.33,
+   "lon": 18.07
+  },
+  {
+   "cloud": "AWS",
+   "code": "il-central-1",
+   "name": "Israel (Tel Aviv)",
+   "geo": "Oriente Medio",
+   "country": "Israel",
+   "city": "Tel Aviv",
+   "lat": 32.09,
+   "lon": 34.78
+  },
+  {
+   "cloud": "AWS",
+   "code": "me-south-1",
+   "name": "Middle East (Bahrain)",
+   "geo": "Oriente Medio",
+   "country": "Baréin",
+   "city": "Manama",
+   "lat": 26.07,
+   "lon": 50.56
+  },
+  {
+   "cloud": "AWS",
+   "code": "me-central-1",
+   "name": "Middle East (UAE)",
+   "geo": "Oriente Medio",
+   "country": "Emiratos Árabes Unidos",
+   "city": "Dubái",
+   "lat": 25.27,
+   "lon": 55.3
+  },
+  {
+   "cloud": "AWS",
+   "code": "af-south-1",
+   "name": "Africa (Cape Town)",
+   "geo": "África",
+   "country": "Sudáfrica",
+   "city": "Ciudad del Cabo",
+   "lat": -33.92,
+   "lon": 18.42
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-east-1",
+   "name": "Asia Pacific (Hong Kong)",
+   "geo": "Asia-Pacífico",
+   "country": "Hong Kong",
+   "city": "Hong Kong",
+   "lat": 22.32,
+   "lon": 114.17
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-east-2",
+   "name": "Asia Pacific (Taipei)",
+   "geo": "Asia-Pacífico",
+   "country": "Taiwán",
+   "city": "Taipéi",
+   "lat": 25.03,
+   "lon": 121.57
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-south-1",
+   "name": "Asia Pacific (Mumbai)",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Bombay",
+   "lat": 19.08,
+   "lon": 72.88
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-south-2",
+   "name": "Asia Pacific (Hyderabad)",
+   "geo": "Asia-Pacífico",
+   "country": "India",
+   "city": "Hyderabad",
+   "lat": 17.39,
+   "lon": 78.49
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-1",
+   "name": "Asia Pacific (Singapore)",
+   "geo": "Asia-Pacífico",
+   "country": "Singapur",
+   "city": "Singapur",
+   "lat": 1.35,
+   "lon": 103.82
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-2",
+   "name": "Asia Pacific (Sydney)",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Sídney",
+   "lat": -33.87,
+   "lon": 151.21
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-3",
+   "name": "Asia Pacific (Jakarta)",
+   "geo": "Asia-Pacífico",
+   "country": "Indonesia",
+   "city": "Yakarta",
+   "lat": -6.21,
+   "lon": 106.85
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-4",
+   "name": "Asia Pacific (Melbourne)",
+   "geo": "Asia-Pacífico",
+   "country": "Australia",
+   "city": "Melbourne",
+   "lat": -37.81,
+   "lon": 144.96
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-5",
+   "name": "Asia Pacific (Malaysia)",
+   "geo": "Asia-Pacífico",
+   "country": "Malasia",
+   "city": "Kuala Lumpur",
+   "lat": 3.14,
+   "lon": 101.69
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-6",
+   "name": "Asia Pacific (New Zealand)",
+   "geo": "Asia-Pacífico",
+   "country": "Nueva Zelanda",
+   "city": "Auckland",
+   "lat": -36.85,
+   "lon": 174.76
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-southeast-7",
+   "name": "Asia Pacific (Thailand)",
+   "geo": "Asia-Pacífico",
+   "country": "Tailandia",
+   "city": "Bangkok",
+   "lat": 13.76,
+   "lon": 100.5
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-northeast-1",
+   "name": "Asia Pacific (Tokyo)",
+   "geo": "Asia-Pacífico",
+   "country": "Japón",
+   "city": "Tokio",
+   "lat": 35.68,
+   "lon": 139.69
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-northeast-2",
+   "name": "Asia Pacific (Seoul)",
+   "geo": "Asia-Pacífico",
+   "country": "Corea del Sur",
+   "city": "Seúl",
+   "lat": 37.57,
+   "lon": 126.98
+  },
+  {
+   "cloud": "AWS",
+   "code": "ap-northeast-3",
+   "name": "Asia Pacific (Osaka)",
+   "geo": "Asia-Pacífico",
+   "country": "Japón",
+   "city": "Osaka",
+   "lat": 34.69,
+   "lon": 135.5
+  }
+ ]
+}

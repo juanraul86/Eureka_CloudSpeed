@@ -1,0 +1,27 @@
+/* Estilo común de la documentación de Eureka_CloudSpeed (claro y oscuro según el sistema) */
+:root{--bg:#F3F4F6;--sf:#fff;--bd:#E5E7EB;--tx:#1F2937;--mu:#6B7280;--ac:#0F6CBD;--code:#F3F4F6;--ok:#15803D;--okbg:#DCFCE7;--wa:#B45309;--wabg:#FEF3C7;--ko:#B42318;--kobg:#FEE4E2}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--sf:#1B1E25;--bd:#2D323C;--tx:#E6E8EC;--mu:#9AA3B2;--ac:#3B8EE0;--code:#14171D;--ok:#4ADE80;--okbg:#14532D55;--wa:#FBBF24;--wabg:#78350F55;--ko:#F97066;--kobg:#7A2E2A55}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Segoe UI",system-ui,sans-serif}
+header{background:var(--ac);color:#fff;padding:22px 24px}
+header h1{margin:0;font-size:24px}header p{margin:4px 0 0;opacity:.9}
+header nav{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 16px}header nav a{color:#fff;opacity:.9;font-size:14px}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 48px}
+section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:18px 22px;margin-bottom:16px;overflow-x:auto}
+h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:18px 0 6px}
+a{color:var(--ac)}
+table{border-collapse:collapse;width:100%;min-width:600px}
+th,td{border-bottom:1px solid var(--bd);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--mu);font-size:13px;font-weight:600}
+code,pre{background:var(--code);border:1px solid var(--bd);border-radius:4px;font:13px Consolas,"Cascadia Mono",monospace}
+code{padding:1px 5px}pre{padding:10px 12px;overflow-x:auto;white-space:pre}
+img{max-width:100%;border:1px solid var(--bd);border-radius:6px;margin:8px 0}
+.note{border-left:3px solid var(--wa);background:var(--wabg);padding:8px 12px;border-radius:4px}
+.tip{border-left:3px solid var(--ac);background:color-mix(in srgb,var(--ac) 10%,transparent);padding:8px 12px;border-radius:4px}
+.st{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap}
+.ok{color:var(--ok);background:var(--okbg)}.wa{color:var(--wa);background:var(--wabg)}.ko{color:var(--ko);background:var(--kobg)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;background:var(--sf)}
+.card b{display:block;font-size:17px;margin-bottom:4px}.card span{color:var(--mu);font-size:14px}
+.mu{color:var(--mu)}
+.toc{columns:2;column-gap:32px}@media (max-width:640px){.toc{columns:1}}

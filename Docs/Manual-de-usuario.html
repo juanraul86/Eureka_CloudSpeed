@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manual de uso · Eureka_CloudSpeed</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <h1>Manual de uso</h1>
+  <p>Eureka_CloudSpeed 1.3.0 · cómo medir, comparar, consultar y exportar</p>
+  <nav><a href="index.html">Inicio</a><a href="Documentacion-tecnica.html">Documentación técnica</a><a href="Bitacora-de-versiones.html">Bitácora de versiones</a><a href="Revision-seguridad-y-confidencialidad.html">Revisión de seguridad</a></nav>
+</header>
+<main>
+
+<section>
+  <h2>Primeros pasos</h2>
+  <ol>
+    <li>Abre la carpeta de la herramienta y haz doble clic en <b><code>Eureka_CloudSpeed.cmd</code></b>. No necesita administrador ni instalación.</li>
+    <li>A la izquierda está el menú con las secciones. Arriba a la derecha: <b>Abrir carpeta de datos</b> y <b>Tema</b> (sistema, claro u oscuro).</li>
+    <li>La barra inferior muestra lo que está pasando y la carpeta donde se guardan tus datos.</li>
+  </ol>
+  <p class="note">Si usas <code>Eureka_CloudSpeed.exe</code> y Windows lo bloquea ("Smart App Control"), es porque todavía no está firmado. Usa el <code>.cmd</code>.</p>
+  <div class="cards">
+    <div class="card"><b>¿Va bien la nube ahora?</b><span>Estado de servicios</span></div>
+    <div class="card"><b>¿Qué región me conviene?</b><span>Latencia y Mapa de regiones</span></div>
+    <div class="card"><b>¿Qué ancho de banda tengo?</b><span>Velocidad</span></div>
+    <div class="card"><b>¿Cuánto cuesta?</b><span>Precios de VM y de IA</span></div>
+    <div class="card"><b>¿De quién es esta IP?</b><span>Búsqueda de IP</span></div>
+    <div class="card"><b>Informes</b><span>Excel, Power BI, CSV e HTML</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Estado de servicios</h2>
+  <img src="img/00-estado.png" alt="Sección Estado de servicios">
+  <p>Al abrirla se comprueba automáticamente:</p>
+  <ul>
+    <li><b>Estado oficial</b> (tabla superior): lo que publican Azure, Microsoft 365, Power Platform, Azure DevOps, AWS, Google Cloud, Google Workspace, GitHub y Cloudflare.</li>
+    <li><b>Desde tu red</b> (tabla inferior): si los servicios clave responden desde tu red, con el tiempo de DNS, de conexión y de HTTPS.</li>
+    <li><b>Aviso</b> (arriba, con color): el diagnóstico combinado.</li>
+  </ul>
+  <table>
+    <tr><th>Aviso</th><th>Qué significa</th><th>Qué hacer</th></tr>
+    <tr><td><span class="st ok">Todo operativo</span></td><td>Nadie publica incidencias y todo responde.</td><td>Nada.</td></tr>
+    <tr><td><span class="st ko">Incidencia confirmada</span></td><td>El proveedor la publica y también se nota desde tu red.</td><td>Sigue la página de estado del proveedor (botón <i>Abrir página de estado</i>).</td></tr>
+    <tr><td><span class="st wa">Caída no publicada</span></td><td>Falla desde tu red, pero el proveedor no dice nada.</td><td>Puede ser el inicio de una caída global o algo local (proxy, firewall, VPN). Prueba desde otra red.</td></tr>
+    <tr><td><span class="st ko">Página de estado caída</span></td><td>El servicio no responde y su página de estado tampoco. Es típico de las caídas globales.</td><td>Consulta las cuentas oficiales del proveedor en redes sociales (Azure Support, Microsoft 365 Status, AWS Support).</td></tr>
+    <tr><td><span class="st ko">Problema de tu conexión</span></td><td>Casi nada responde, tampoco el sitio de control.</td><td>Revisa tu Internet, DNS o proxy.</td></tr>
+  </table>
+  <p>Opciones: <b>Comprobar cada</b> 1, 2, 5 o 15 minutos (sigue funcionando aunque estés en otra sección y avisa en la barra inferior), <b>Guardar histórico</b> (evidencias con fecha y hora para reclamar por el SLA) y <b>Exportar CSV</b>.</p>
+</section>
+
+<section>
+  <h2>Latencia</h2>
+  <img src="img/01-latencia-ranking.png" alt="Ranking de latencia">
+  <ol>
+    <li>En <b>Qué medir</b> elige nubes y geografías, o busca una región. Puedes marcar y desmarcar regiones en la tabla.</li>
+    <li>Pulsa <b>Iniciar</b>, o <b>Prueba rápida (10 rondas)</b> para una medición rápida de todas.</li>
+    <li>El ranking se ordena solo. Verde &lt; 50 ms, lima &lt; 100, ámbar &lt; 175, rojo ≥ 175.</li>
+    <li>Pestañas: <b>Gráfico</b> (P50 con bigote P95), <b>Evolución</b> (mediana por ronda), <b>Mapa</b> (coloreado por latencia) y <b>Azure vs AWS</b> (mejor región de cada nube por geografía).</li>
+  </ol>
+  <p><b>Cómo medir</b>: muestras por ronda, saludo TLS, <b>Modo continuo</b> (rondas cada 10 s a 10 min), <b>Etiqueta</b> (por ejemplo "Oficina · fibra" o "Casa · VPN") y <b>Guardar en el histórico</b> (necesario para Power BI).</p>
+  <p><b>Tu conexión</b>: muestra tu IP pública, ubicación aproximada y operador (consulta a ipinfo.io solo al pulsar).</p>
+  <p><b>Exportar</b>: Excel con gráficos, Power BI (histórico), CSV e informe HTML. Activa <b>Ocultar el nombre del equipo</b> antes de compartir informes.</p>
+  <img src="img/04-latencia-mapa.png" alt="Mapa de latencia">
+</section>
+
+<section>
+  <h2>Velocidad (descarga y subida)</h2>
+  <img src="img/06-velocidad.png" alt="Test de velocidad">
+  <p>Mide latencia, jitter, descarga y subida a una región, y la <b>latencia con carga</b>: si sube mucho durante la transferencia, tu línea se satura. Necesita almacenamiento propio en cada región:</p>
+  <ul>
+    <li><b>Azure</b>: botón <i>Crear cuentas en Azure (script)</i> → copia el comando. Requiere Azure CLI y una suscripción.</li>
+    <li><b>AWS</b>: botón <i>Crear buckets en AWS (script)</i>. Requiere AWS CLI e iniciar sesión (<code>aws login --region eu-north-1</code>, con la región de tu proyecto).</li>
+  </ul>
+  <p>Cuando el script termina, la sección se recarga sola. Elige la región, <b>Una</b> o <b>Varias (4)</b> conexiones, la duración y pulsa <b>Iniciar test</b>. <b>Subir un archivo</b> mide la subida de un archivo tuyo (no confidencial; se borra al terminar).</p>
+  <div class="tip"><b>Prueba sin costes residuales:</b> <code>Herramientas\Probar-Velocidad.ps1 -Nube AWS -Region eu-north-1</code> crea el almacenamiento, mide, lo borra siempre y comprueba que no queda nada. Al final te pregunta si quieres mantener la sesión de la CLI o cerrarla. Con Azure en otro directorio: <code>-Nube Azure -Tenant &lt;directorio&gt;</code>.</div>
+</section>
+
+<section>
+  <h2>Latencia entre regiones y Comandos</h2>
+  <img src="img/07-entre-regiones.png" alt="Latencia entre regiones">
+  <p><b>Latencia entre regiones</b>: elige la región de origen y verás la mediana publicada por Microsoft hasta cada región de Azure. Puedes filtrar por máximo de milisegundos, exportar a CSV o descargar la <b>matriz completa en Excel</b>.</p>
+  <p><b>Comandos</b>: genera comandos <code>psping</code>, <code>Test-NetConnection</code>, un bucle de PowerShell y <code>curl</code> para medir desde otros equipos. <b>Medir esta región</b> lo hace al momento con histograma.</p>
+</section>
+
+<section>
+  <h2>Precios</h2>
+  <img src="img/09-precios-vm.png" alt="Precios de máquinas virtuales">
+  <ul>
+    <li><b>Máquinas virtuales</b>: elige nube, región, sistema y modelo (Azure: pago por uso, Spot, planes de ahorro y reservas de 1 y 3 años; AWS: bajo demanda) y pulsa <b>Consultar precios</b>. Filtra por texto, vCPU, memoria o GPU; muestra por hora o por mes. <b>Comparar en todas las regiones</b> enseña dónde es más barato el tamaño elegido. <b>Exportar a Excel</b>.</li>
+    <li><b>Modelos de IA</b>: precios de Azure OpenAI y Microsoft Foundry en USD por millón de tokens, por tipo (entrada, salida, caché) y despliegue (Global, Data Zone, Regional, Batch).</li>
+  </ul>
+  <p class="mu">Los precios son públicos, en USD y solo de cómputo; se guardan en caché durante el día.</p>
+</section>
+
+<section>
+  <h2>Información: regiones, mapa y nubes</h2>
+  <img src="img/12-mapa.png" alt="Mapa de regiones">
+  <ul>
+    <li><b>Regiones y zonas</b>: Azure global, China, US Gov, previstas y AWS, con ubicación, región emparejada, zonas de disponibilidad, acceso, residencia de datos y latencia medida. Vista <b>Por geografía</b>. Doble clic → la ve en el mapa.</li>
+    <li><b>Mapa de regiones</b>: color por nube o por latencia, zoom por continente, búsqueda. Pulsa un punto para ver sus datos y <b>Medir latencia</b>.</li>
+    <li><b>Nubes soberanas y entornos</b>: Azure global, US Government y China, y la tabla de endpoints de cada entorno.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Red: búsqueda y rangos de IP</h2>
+  <img src="img/14-ip.png" alt="Búsqueda de IP">
+  <ul>
+    <li><b>Búsqueda de IP</b>: escribe una IP, un dominio o una URL. Te dice si pertenece a Azure (Public, China, US Gov) o a AWS, con la etiqueta de servicio, la región y el prefijo. La primera vez descarga los rangos oficiales.</li>
+    <li><b>Rangos de IP</b>: filtra por nube, servicio, región o etiqueta y copia o guarda los prefijos IPv4/IPv6 (por ejemplo, para reglas de firewall).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Power BI (versión gratuita)</h2>
+  <ol>
+    <li>Mide con <b>Guardar en el histórico</b> activado.</li>
+    <li>Pulsa <b>Power BI (histórico)</b>: se abre la carpeta <code>Exportaciones\PowerBI</code>.</li>
+    <li>Doble clic en <code>Abrir_en_Power_BI.pbids</code> (o en Power BI Desktop: <i>Obtener datos &gt; Libro de Excel</i>) y carga las tablas Mediciones, Regiones y Sesiones.</li>
+    <li>Pega las medidas de <code>Medidas.dax</code> y sigue <code>Guia-Power-BI.html</code>.</li>
+  </ol>
+  <p class="mu">Para acumular histórico automáticamente: <code>Eureka_CloudSpeed.cmd -SinInterfaz -Etiqueta "Oficina"</code> en el Programador de tareas.</p>
+</section>
+
+<section>
+  <h2>Privacidad y tus datos</h2>
+  <ul>
+    <li>Todo se guarda en tu equipo (carpetas <code>Datos</code> y <code>Exportaciones</code>). No hay telemetría.</li>
+    <li>El histórico se borra solo al superar el plazo de conservación (12 meses por defecto). Cámbialo en <b>Ayuda → Privacidad: tus datos</b>, donde también puedes <b>Borrar todo el histórico</b>.</li>
+    <li><b>Ocultar el nombre del equipo</b> sustituye el nombre por un seudónimo en exportaciones e histórico.</li>
+    <li>Las URL del test de velocidad se guardan cifradas para tu usuario de Windows.</li>
+    <li>Lo que se crea en Azure o AWS para pruebas se borra con <code>-Eliminar</code>, o automáticamente con <code>Probar-Velocidad.ps1</code>.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Problemas frecuentes</h2>
+  <table>
+    <tr><th>Síntoma</th><th>Solución</th></tr>
+    <tr><td>Windows bloquea el .exe</td><td>Usa <code>Eureka_CloudSpeed.cmd</code> (los .exe aún no están firmados).</td></tr>
+    <tr><td>El .exe dice que los archivos no coinciden</td><td>El código ha cambiado: recompila con <code>Build\Build-Exe.ps1</code> (con la app cerrada) o usa el .cmd.</td></tr>
+    <tr><td>Velocidad: el desplegable está vacío</td><td>Faltan endpoints: crea el almacenamiento con el script de Azure o AWS.</td></tr>
+    <tr><td>Velocidad: región "(caducado)"</td><td>Renueva: <code>aws login</code> + <code>Crear-BucketsVelocidad.ps1 -Renovar</code>, o <code>Crear-CuentasVelocidad.ps1 -Renovar</code>.</td></tr>
+    <tr><td><code>aws</code> o <code>az</code> no se reconoce</td><td>Cierra y abre la consola después de instalar la CLI.</td></tr>
+    <tr><td><code>aws login</code> da error 400 o aviso de región</td><td>Usa la región de tu proyecto: <code>aws login --region eu-north-1</code>.</td></tr>
+    <tr><td>Azure: "No subscriptions found"</td><td>Tu directorio no tiene suscripciones: créala en el portal (Suscripciones → Agregar) o indica otro directorio con <code>-Tenant</code>.</td></tr>
+    <tr><td>Una región aparece "Sin endpoint"</td><td>No tiene endpoint regional público; puedes poner un host propio en <code>Catalog\regions.json</code>.</td></tr>
+  </table>
+</section>
+
+</main>
+</body>
+</html>

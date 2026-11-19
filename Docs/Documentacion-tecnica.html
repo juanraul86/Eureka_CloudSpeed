@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Documentación técnica · Eureka_CloudSpeed</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <h1>Documentación técnica</h1>
+  <p>Eureka_CloudSpeed 1.3.0 · arquitectura, componentes, datos, seguridad, compilación y mantenimiento</p>
+  <nav><a href="index.html">Inicio</a><a href="Manual-de-usuario.html">Manual de uso</a><a href="Bitacora-de-versiones.html">Bitácora de versiones</a><a href="Revision-seguridad-y-confidencialidad.html">Revisión de seguridad</a></nav>
+</header>
+<main>
+
+<section>
+  <h2>Contenido</h2>
+  <ol class="toc">
+    <li><a href="#arquitectura">Arquitectura</a></li>
+    <li><a href="#estructura">Estructura de carpetas</a></li>
+    <li><a href="#motor">Motor en C#</a></li>
+    <li><a href="#interfaz">Interfaz y secciones</a></li>
+    <li><a href="#medicion">Método de medición</a></li>
+    <li><a href="#fuentes">Fuentes de datos externas</a></li>
+    <li><a href="#datos">Datos locales y formatos</a></li>
+    <li><a href="#exportaciones">Exportaciones</a></li>
+    <li><a href="#nube">Scripts de nube (Azure y AWS)</a></li>
+    <li><a href="#seguridad">Seguridad y privacidad</a></li>
+    <li><a href="#consola">Modo consola</a></li>
+    <li><a href="#compilacion">Compilación y publicación</a></li>
+    <li><a href="#mantenimiento">Mantenimiento y ampliación</a></li>
+    <li><a href="#limites">Limitaciones conocidas</a></li>
+  </ol>
+</section>
+
+<section id="arquitectura">
+  <h2>1. Arquitectura</h2>
+  <p>Aplicación de escritorio para Windows 10/11, portable y sin instalación ni permisos de administrador. Mismo patrón que Eureka_Utils:</p>
+  <ul>
+    <li><b>Windows PowerShell 5.1</b> como capa de orquestación (sin módulos externos).</li>
+    <li><b>WPF</b> para la interfaz: ventana principal, tema en recursos de la aplicación y una página XAML + un script por sección, cargadas la primera vez que se abren.</li>
+    <li><b>Motor en C# 5</b> (<code>Engine\*.cs</code>) compilado <b>en memoria</b> al arrancar con el compilador de .NET Framework incluido en Windows. No se guarda ninguna DLL en disco: Smart App Control bloquea las DLL sin firmar creadas por el usuario.</li>
+    <li><b>Concurrencia</b>: las mediciones corren en el grupo de subprocesos (.NET) y entregan resultados por colas concurrentes; las consultas web corren en runspaces de PowerShell. Un temporizador de 150 ms en el hilo de la interfaz recoge resultados y redibuja, de modo que la ventana nunca se bloquea.</li>
+    <li><b>Lanzadores</b>: <code>Eureka_CloudSpeed.cmd</code> (siempre funciona), <code>Eureka_CloudSpeed.exe</code> (verifica la huella SHA-256 de todo el código antes de ejecutar) y <code>Dist\Eureka_CloudSpeed_Portable.exe</code> (un solo archivo que se extrae en el perfil del usuario).</li>
+  </ul>
+<pre>Eureka_CloudSpeed.cmd / .exe
+        │
+        ▼
+Eureka_CloudSpeed.ps1 ──► Modules\Core.psm1 (rutas, catálogo, preferencias, DPAPI, seudónimo, conservación)
+        │                └► Import-CsEngine ──► Engine\*.cs (compilado en memoria)
+        │             Modules\Export.psm1 (Excel, CSV, HTML, Power BI)
+        ├─ -SinInterfaz ──► medición por consola + exportaciones
+        └─ interfaz ─► UI\Theme.xaml + UI\MainWindow.xaml + UI\Shell.ps1 (páginas, tareas en segundo plano)
+                         └► UI\Pages\&lt;Sección&gt;.xaml + .ps1 (Initialize-/Show-/Update-/Stop-CsPage&lt;Sección&gt;)</pre>
+</section>
+
+<section id="estructura">
+  <h2>2. Estructura de carpetas</h2>
+  <table>
+    <tr><th>Ruta</th><th>Contenido</th></tr>
+    <tr><td><code>Catalog\regions.json</code></td><td>Regiones medibles (92): nube, código, nombre, geografía, país, ciudad, coordenadas, host (o vacío si no hay endpoint público).</td></tr>
+    <tr><td><code>Catalog\azure-regions.json</code></td><td>Referencia de regiones de Azure (global, China, US Gov, previstas): región emparejada, zonas, residencia de datos.</td></tr>
+    <tr><td><code>Catalog\region-latency.json</code></td><td>Matriz de latencia publicada por Microsoft entre regiones.</td></tr>
+    <tr><td><code>Catalog\vm-specs.json</code></td><td>vCPU, memoria, serie y GPU de 1464 tamaños de VM (los precios se consultan en vivo).</td></tr>
+    <tr><td><code>Catalog\world-land.json</code></td><td>Contorno de tierras (Natural Earth 110 m) para el mapa.</td></tr>
+    <tr><td><code>Catalog\aws-locations.json</code></td><td>Correspondencia código de región AWS → nombre de ubicación (precios de EC2).</td></tr>
+    <tr><td><code>Catalog\azure-environments.json</code></td><td>Nubes soberanas y endpoints por entorno.</td></tr>
+    <tr><td><code>Catalog\status-sources.json</code></td><td>Fuentes de estado oficiales y comprobaciones desde la red.</td></tr>
+    <tr><td><code>Catalog\velocidad.ejemplo.json</code></td><td>Plantilla de endpoints del test de velocidad.</td></tr>
+    <tr><td><code>Engine\</code></td><td>Motor en C# (ver apartado 3).</td></tr>
+    <tr><td><code>Modules\</code></td><td><code>Core.psm1</code> y <code>Export.psm1</code>.</td></tr>
+    <tr><td><code>UI\</code>, <code>UI\Pages\</code></td><td>Ventana, tema, armazón y secciones.</td></tr>
+    <tr><td><code>PowerBI\</code></td><td>Consultas de Power Query, medidas DAX y guía.</td></tr>
+    <tr><td><code>Herramientas\</code></td><td>Scripts de Azure y AWS, firma SigV4, política IAM mínima y prueba automática.</td></tr>
+    <tr><td><code>Build\</code></td><td>Lanzador, manifiesto de Windows, compilación y firma de pruebas.</td></tr>
+    <tr><td><code>Docs\</code></td><td>Esta documentación, manual, bitácora, revisión de seguridad y capturas.</td></tr>
+    <tr><td><code>Datos\</code> · <code>Exportaciones\</code> · <code>Config\</code></td><td>Datos del usuario (no se publican; excluidos de git y de los paquetes). Con el portable están en <code>Eureka_CloudSpeed_Datos</code> junto al .exe.</td></tr>
+  </table>
+</section>
+
+<section id="motor">
+  <h2>3. Motor en C# (<code>Engine\</code>)</h2>
+  <table>
+    <tr><th>Archivo</th><th>Clases principales</th><th>Responsabilidad</th></tr>
+    <tr><td><code>Engine.cs</code></td><td><code>RegionInfo</code>, <code>Sample</code>, <code>RegionRow</code>, <code>ProbeEngine</code>, <code>Runner</code>, <code>Stats</code>, <code>Native</code></td><td>Medición de latencia en paralelo (16 hilos), estadísticas (P50, P95, jitter, pérdida), filas observables para la interfaz, barra de título oscura.</td></tr>
+    <tr><td><code>Speed.cs</code></td><td><code>SpeedEndpoint</code>, <code>SpeedTest</code>, <code>SpeedResult</code></td><td>Test de velocidad: latencia/jitter, descarga y subida con 1 o 4 conexiones, curva de Mbps, latencia con carga, subida de archivo, borrado de blobs de prueba.</td></tr>
+    <tr><td><code>Status.cs</code></td><td><code>StatusRow</code>, <code>ProbeTarget</code>, <code>StatusProbe</code></td><td>Comprobaciones DNS + TCP + HTTPS en paralelo para la sección de estado.</td></tr>
+    <tr><td><code>Net.cs</code></td><td><code>IpPrefix</code>, <code>IpRangeEntry</code>, <code>IpRanges</code></td><td>Carga de Service Tags de Azure y de <code>ip-ranges.json</code> de AWS; búsqueda de IPv4/IPv6 por prefijo.</td></tr>
+    <tr><td><code>Charts.cs</code>, <code>ChartsExtra.cs</code></td><td><code>Charts</code>, <code>ChartTheme</code>, <code>MapPoint</code></td><td>Gráficos WPF dibujados a mano: ranking, evolución, Azure vs AWS, mapa, curva de velocidad y barras.</td></tr>
+    <tr><td><code>Xlsx.cs</code></td><td><code>XWorkbook</code>, <code>XSheet</code>, <code>XTable</code>, <code>XChart</code></td><td>Escritor de .xlsx (Office Open XML) sin dependencias: tablas, escalas de color y gráficos nativos.</td></tr>
+    <tr><td><code>Reports.cs</code></td><td><code>Store</code>, <code>ExcelReport</code>, <code>PowerBiBook</code></td><td>Histórico CSV, informe de Excel de la sesión y libro de Power BI en estrella.</td></tr>
+  </table>
+  <p class="mu">Restricciones: C# 5 (Add-Type de PowerShell 5.1). Los scripts .ps1/.psm1 se guardan en UTF-8 con BOM; sin él, PowerShell 5.1 interpreta mal las tildes.</p>
+</section>
+
+<section id="interfaz">
+  <h2>4. Interfaz y secciones</h2>
+  <p>Cada sección es <code>UI\Pages\&lt;Tag&gt;.xaml</code> + funciones en un script de <code>UI\Pages</code>. <code>Shell.ps1</code> la carga al pulsar su entrada del menú y llama, si existen, a <code>Initialize-CsPage&lt;Tag&gt;</code> (una vez), <code>Show-CsPage&lt;Tag&gt;</code> (al mostrarla), <code>Update-CsPage&lt;Tag&gt;</code> (cada ciclo mientras está visible) y <code>Stop-CsPage&lt;Tag&gt;</code> (al cerrar).</p>
+  <table>
+    <tr><th>Sección (Tag)</th><th>Script</th><th>Notas</th></tr>
+    <tr><td>Estado de servicios (<code>Estado</code>)</td><td><code>Estado.ps1</code></td><td>Fuentes oficiales + comprobación desde la red + diagnóstico combinado; comprobación automática también fuera de la sección.</td></tr>
+    <tr><td>Latencia (<code>Latencia</code>)</td><td><code>Gui.ps1</code></td><td>Ranking en directo, prueba rápida de 10 rondas, modo continuo, 5 pestañas de gráficos, tu conexión, exportaciones.</td></tr>
+    <tr><td>Velocidad (<code>Velocidad</code>)</td><td><code>Velocidad.ps1</code></td><td>Lee <code>Config\velocidad.json</code> (descifrado DPAPI), se recarga sola si cambia.</td></tr>
+    <tr><td>Latencia entre regiones (<code>RegionRegion</code>)</td><td><code>RegionRegion.ps1</code></td><td>Tabla, gráfico y matriz completa en Excel.</td></tr>
+    <tr><td>Comandos (<code>Comandos</code>)</td><td><code>Comandos.ps1</code></td><td>psping, Test-NetConnection, bucle PowerShell, curl y medición inmediata.</td></tr>
+    <tr><td>Precios VM / IA (<code>PreciosVm</code>, <code>PreciosIa</code>)</td><td><code>Precios.ps1</code></td><td>Consultas en segundo plano; caché diaria en <code>Datos\cache</code>.</td></tr>
+    <tr><td>Regiones, Mapa, Nubes</td><td><code>Info.ps1</code></td><td>Directorio de regiones común a las tres secciones.</td></tr>
+    <tr><td>Búsqueda de IP, Rangos (<code>Ip</code>, <code>Rangos</code>)</td><td><code>Red.ps1</code></td><td>Descarga al pulsar; carga en segundo plano.</td></tr>
+    <tr><td>Ayuda (<code>Ayuda</code>)</td><td><code>Ayuda.ps1</code></td><td>Preguntas frecuentes, plazo de conservación y borrado del histórico.</td></tr>
+  </table>
+  <p>Tema claro/oscuro: <code>Set-CsTheme</code> sustituye los pinceles de <code>Application.Resources</code>; los estilos usan <code>DynamicResource</code>. Capturas automáticas para documentación: variable <code>CS_CAPTURE=&lt;carpeta&gt;</code> (recorre todas las secciones en claro y oscuro).</p>
+</section>
+
+<section id="medicion">
+  <h2>5. Método de medición</h2>
+  <ul>
+    <li><b>Latencia</b>: tiempo de establecimiento de una conexión TCP al puerto 443 del endpoint regional (≈ 1 RTT). DNS previo y una conexión de calentamiento que no cuenta. Orden aleatorio de regiones en cada ronda. Tiempo de espera 2 s. Opcional: duración del saludo TLS 1.2.</li>
+    <li><b>Endpoints</b>: Azure <code>&lt;región&gt;.api.cognitive.microsoft.com</code>; AWS <code>dynamodb.&lt;región&gt;.amazonaws.com</code>. Las regiones sin endpoint regional público se marcan "Sin endpoint" y admiten un host propio.</li>
+    <li><b>Estadísticas</b>: P50 (mediana), P95, mínimo, media, máximo, jitter (media de diferencias absolutas entre muestras consecutivas), pérdida (muestras sin respuesta / total).</li>
+    <li><b>Velocidad</b>: GET del archivo de prueba y PUT de datos aleatorios con 1 o 4 conexiones; muestreo cada 250 ms; los primeros 1,5 s no cuentan (arranque de TCP); tope de datos por etapa (200 MiB por defecto); latencia con carga cada 450 ms durante la transferencia.</li>
+    <li><b>Estado de servicios</b>: cualquier respuesta HTTP &lt; 500 = "Responde" (un 401/302 es normal); 5xx = degradado; sin respuesta DNS/TCP/HTTPS = interrupción; respuesta &gt; 5 s = muy lento.</li>
+  </ul>
+</section>
+
+<section id="fuentes">
+  <h2>6. Fuentes de datos externas</h2>
+  <table>
+    <tr><th>Uso</th><th>Origen</th><th>Cuándo se conecta</th></tr>
+    <tr><td>Latencia</td><td>Endpoints regionales de Azure AI services y Amazon DynamoDB</td><td>Al medir</td></tr>
+    <tr><td>Precios VM e IA de Azure</td><td><code>prices.azure.com</code> (API pública)</td><td>Al pulsar Consultar precios (caché diaria)</td></tr>
+    <tr><td>Precios de EC2</td><td><code>b0.p.awsstatic.com</code> (lista de precios pública de AWS)</td><td>Al consultar</td></tr>
+    <tr><td>Rangos de IP</td><td>Microsoft Download Center (Service Tags) e <code>ip-ranges.amazonaws.com</code></td><td>Al abrir Búsqueda de IP o Rangos la primera vez, o al pulsar Actualizar</td></tr>
+    <tr><td>Estado oficial</td><td><code>status.cloud.microsoft</code>, <code>azure.status.microsoft</code>, <code>status.dev.azure.com</code>, <code>health.aws.amazon.com</code>, <code>status.cloud.google.com</code>, <code>google.com/appsstatus</code>, <code>githubstatus.com</code>, <code>cloudflarestatus.com</code></td><td>Al abrir Estado de servicios y en la comprobación automática</td></tr>
+    <tr><td>Comprobación desde la red</td><td>20 servicios de <code>status-sources.json</code> (incluye <code>wikipedia.org</code> como control)</td><td>Igual que la anterior</td></tr>
+    <tr><td>Tu conexión</td><td><code>ipinfo.io</code></td><td>Solo al pulsar Ver mi conexión</td></tr>
+    <tr><td>Datos de referencia</td><td>azure-speed-test (blrchen, MIT), Natural Earth (dominio público) vía world-atlas (ISC)</td><td>Incluidos en <code>Catalog\</code>; sin conexión</td></tr>
+  </table>
+</section>
+
+<section id="datos">
+  <h2>7. Datos locales y formatos</h2>
+  <table>
+    <tr><th>Archivo</th><th>Formato</th><th>Columnas principales</th></tr>
+    <tr><td><code>Datos\Mediciones.csv</code></td><td>CSV coma, UTF-8 BOM, invariante</td><td>SesionId, FechaHora, Ronda, Clave, Nube, Código, IP, TCP_ms, TLS_ms, Correcto, Error, Equipo, Etiqueta</td></tr>
+    <tr><td><code>Datos\Sesiones.csv</code></td><td>CSV coma</td><td>SesionId, Inicio, Equipo, Etiqueta, Muestras, TLS, Versión</td></tr>
+    <tr><td><code>Datos\Regiones.csv</code></td><td>CSV coma</td><td>Clave, Nube, Código, Región, Geografía, País, Ciudad, Latitud, Longitud, Host</td></tr>
+    <tr><td><code>Datos\Velocidad.csv</code></td><td>CSV punto y coma</td><td>Fecha, Región, Modo, Equipo, Latencia, Jitter, Descarga/Subida Mbps y MiB, latencia con carga</td></tr>
+    <tr><td><code>Datos\Estado.csv</code></td><td>CSV punto y coma</td><td>Fecha, Fuente, Proveedor, Servicio, Nivel, Estado, Detalle, DNS/Conexión/HTTPS ms, Código, Equipo</td></tr>
+    <tr><td><code>Datos\cache\</code></td><td>JSON</td><td>Precios del día y rangos de IP descargados</td></tr>
+    <tr><td><code>Config\preferencias.json</code></td><td>JSON</td><td>Tema, muestras, TLS, modo continuo, intervalo, etiqueta, filtros, histórico, seudónimo, plazo de conservación</td></tr>
+    <tr><td><code>Config\velocidad.json</code> (+ <code>.bak</code>)</td><td>JSON, URL cifradas <code>dpapi:</code></td><td>cloud, code, name, downloadUrl, uploadUrl (una o varias líneas), uploadKind, createdBy, bucket/account, expires</td></tr>
+  </table>
+  <p>Conservación: al arrancar se borran del histórico las filas con más antigüedad que el plazo elegido (12 meses por defecto, <code>Invoke-CsRetention</code>). <code>Remove-CsHistory</code> borra todo el histórico y las cachés.</p>
+</section>
+
+<section id="exportaciones">
+  <h2>8. Exportaciones</h2>
+  <ul>
+    <li><b>Excel de la sesión</b>: Resumen (tabla + escalas de color), Gráficos (barras y columnas nativas), Azure vs AWS, Evolución (líneas), Mediciones y Regiones. Sin macros ni fórmulas.</li>
+    <li><b>Power BI</b>: <code>Exportaciones\PowerBI\Eureka_CloudSpeed_PowerBI.xlsx</code> con todo el histórico (Mediciones, Regiones, Sesiones), <code>.pbids</code>, <code>Medidas.dax</code>, <code>Consultas.pq</code> (lectura directa de los CSV) y guía.</li>
+    <li><b>CSV</b> e <b>informe HTML</b> autocontenido.</li>
+    <li>Todas las exportaciones usan el seudónimo del equipo si está activado y protegen los CSV contra inyección de fórmulas.</li>
+  </ul>
+</section>
+
+<section id="nube">
+  <h2>9. Scripts de nube (<code>Herramientas\</code>)</h2>
+  <table>
+    <tr><th>Script</th><th>Función</th><th>Parámetros</th></tr>
+    <tr><td><code>Crear-CuentasVelocidad.ps1</code></td><td>Azure Storage por región (HTTPS, TLS 1.2, sin acceso anónimo), contenedores descarga/subida, ciclo de vida 24 h, SAS con políticas de acceso almacenadas.</td><td><code>-Regiones -Tenant -Suscripcion -GrupoRecursos -DiasSas</code> · <code>-Renovar</code> · <code>-Revocar</code> · <code>-RotarClaves</code> · <code>-Eliminar [-Confirmar]</code></td></tr>
+    <tr><td><code>Crear-BucketsVelocidad.ps1</code></td><td>Bucket S3 por región (Block Public Access, sin ACL, SSE-S3, TLS ≥ 1.2, ciclo de vida), URL prefirmadas GET y 4 PUT.</td><td><code>-Regiones -Perfil -DiasUrl</code> · <code>-Renovar</code> · <code>-Eliminar [-Confirmar]</code></td></tr>
+    <tr><td><code>Probar-Velocidad.ps1</code></td><td>Prueba completa: crea → mide → <b>borra siempre</b> (bloque <code>finally</code>) → verifica que no queda nada → mantener o cerrar sesión de la CLI.</td><td><code>-Nube AWS|Azure -Region -Segundos -TamanoMiB -Tenant -MantenerSesion | -CerrarSesion</code></td></tr>
+    <tr><td><code>SigV4.ps1</code></td><td>Firma SigV4 de URL prefirmadas de S3 (verificada con el ejemplo oficial de AWS).</td><td><code>New-S3PresignedUrl</code></td></tr>
+    <tr><td><code>aws-iam-politica-minima.json</code></td><td>Política IAM de mínimo privilegio (solo <code>cspeed-*</code>).</td><td>—</td></tr>
+  </table>
+  <p>Guardado de la configuración: copia <code>.bak</code> con permisos restringidos, escritura en <code>.tmp</code> y renombrado atómico, validación (nunca se guarda una renovación vacía) y NTFS limitado al usuario, SYSTEM y Administradores.</p>
+</section>
+
+<section id="seguridad">
+  <h2>10. Seguridad y privacidad (resumen)</h2>
+  <ul>
+    <li>Sin privilegios de administrador; sin telemetría; certificados TLS validados por el sistema.</li>
+    <li>Secretos (URL con SAS/firmas) cifrados con DPAPI (usuario actual + entropía propia).</li>
+    <li>Integridad: el .exe verifica SHA-256 de .ps1, .psm1, .xaml, .cs y .json; ejecuta PowerShell con ruta absoluta desde <code>System32</code>.</li>
+    <li>Datos externos tratados como datos (JSON sin tipos, HTML eliminado, textos en controles de texto, URL abiertas solo si son https).</li>
+    <li>Seudónimo del equipo, conservación limitada y borrado del histórico.</li>
+  </ul>
+  <p>Detalle y verificación: <a href="Revision-seguridad-y-confidencialidad.html">Revisión de seguridad y confidencialidad</a>.</p>
+</section>
+
+<section id="consola">
+  <h2>11. Modo consola</h2>
+<pre>Eureka_CloudSpeed.cmd -SinInterfaz [-Nube Azure,AWS] [-Geografia Europa] [-Region westeurope,eu-west-1]
+                      [-Muestras 5] [-Rondas 1] [-Intervalo 60] [-Tls] [-Etiqueta "Oficina"]
+                      [-Exportar Excel,Csv,Html,PowerBI] [-SinHistorico] [-Anonimo]</pre>
+  <p>Las listas se pueden escribir separadas por comas. Código de salida 0 si todo va bien. Útil en el Programador de tareas para alimentar el histórico de Power BI.</p>
+</section>
+
+<section id="compilacion">
+  <h2>12. Compilación y publicación</h2>
+<pre>powershell -ExecutionPolicy Bypass -File .\Build\Build-Exe.ps1 [-CertificateThumbprint &lt;huella&gt;]</pre>
+  <ol>
+    <li>Genera el icono, el paquete (sin Datos, Exportaciones, Config, Build, Dist) y la lista de huellas SHA-256 del código.</li>
+    <li>Compila <code>Eureka_CloudSpeed.exe</code> (con verificación de integridad) y <code>Dist\Eureka_CloudSpeed_Portable.exe</code> con el compilador de .NET Framework.</li>
+    <li>Firma opcional con un certificado de firma de código (Authenticode + sello de tiempo).</li>
+    <li>Crea <code>Dist\Eureka_CloudSpeed.zip</code> y <code>Dist\MANIFIESTO-v&lt;versión&gt;.txt</code> con las huellas de los artefactos y la lista de archivos publicados.</li>
+  </ol>
+  <p class="note">Hay que recompilar después de cualquier cambio de código o catálogo: si no, el .exe detecta que los archivos no coinciden y no arranca. Si la aplicación está abierta, ciérrala antes de compilar. Sin firma, Smart App Control bloquea los .exe (usar el .cmd).</p>
+</section>
+
+<section id="mantenimiento">
+  <h2>13. Mantenimiento y ampliación</h2>
+  <ul>
+    <li><b>Nueva región</b>: añadirla a <code>Catalog\regions.json</code> (sin <code>host</code> usa el patrón de la nube; <code>host</code> vacío = sin endpoint).</li>
+    <li><b>Nueva fuente de estado</b>: añadirla a <code>status-sources.json</code> con un <code>type</code> existente (<code>mspost</code>, <code>mslist</code>, <code>rss</code>, <code>devops</code>, <code>aws</code>, <code>google</code>, <code>statuspage</code>) o crear uno nuevo en <code>Estado.ps1</code>.</li>
+    <li><b>Nueva sección</b>: <code>UI\Pages\X.xaml</code> + funciones <code>Initialize-CsPageX</code>… en un script de <code>UI\Pages</code> y una entrada <code>RadioButton</code> con <code>Tag="X"</code> en <code>MainWindow.xaml</code>.</li>
+    <li><b>Versión</b>: <code>$script:Version</code> en <code>Modules\Core.psm1</code> y <code>AssemblyVersion</code> en <code>Build\Launcher.cs</code>; registrar los cambios en la <a href="Bitacora-de-versiones.html">bitácora</a>.</li>
+    <li><b>Pruebas</b>: comprobar la sintaxis con el analizador de PowerShell, cargar cada XAML con los recursos del tema y ejecutar las capturas (<code>CS_CAPTURE</code>). Las pruebas en la nube se hacen con <code>Probar-Velocidad.ps1</code>, que borra siempre lo creado.</li>
+  </ul>
+</section>
+
+<section id="limites">
+  <h2>14. Limitaciones conocidas</h2>
+  <ul>
+    <li>Regiones de Azure sin endpoint regional público conocido (17): requieren un host propio.</li>
+    <li>Las URL prefirmadas de S3 caducan como máximo a los 7 días, y antes si las credenciales son temporales (<code>aws login</code>: unos 15 minutos).</li>
+    <li>Microsoft 365 empresarial solo publica públicamente las incidencias que impiden ver el estado en el centro de administración; el detalle por inquilino requiere Microsoft Graph con permisos de administrador.</li>
+    <li>La lista de precios de EC2 y los endpoints de medición son públicos pero no tienen garantía de estabilidad.</li>
+    <li>Interfaz solo en español.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

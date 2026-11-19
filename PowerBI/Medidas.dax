@@ -1,0 +1,34 @@
+// Eureka_CloudSpeed · Medidas DAX para Power BI Desktop
+// Crea cada medida en la tabla Mediciones: Inicio > Nueva medida, pega la línea completa y pulsa Intro.
+// TCP_ms = latencia (tiempo de conexión TCP, ≈ un viaje de ida y vuelta). Correcto = la región respondió.
+
+Latencia P50 (ms) = CALCULATE ( PERCENTILE.INC ( Mediciones[TCP_ms], 0.5 ), Mediciones[Correcto] = TRUE () )
+
+Latencia P95 (ms) = CALCULATE ( PERCENTILE.INC ( Mediciones[TCP_ms], 0.95 ), Mediciones[Correcto] = TRUE () )
+
+Latencia media (ms) = CALCULATE ( AVERAGE ( Mediciones[TCP_ms] ), Mediciones[Correcto] = TRUE () )
+
+Latencia mínima (ms) = CALCULATE ( MIN ( Mediciones[TCP_ms] ), Mediciones[Correcto] = TRUE () )
+
+TLS P50 (ms) = CALCULATE ( PERCENTILE.INC ( Mediciones[TLS_ms], 0.5 ), NOT ISBLANK ( Mediciones[TLS_ms] ) )
+
+Muestras = COUNTROWS ( Mediciones )
+
+Pérdida % = DIVIDE ( CALCULATE ( COUNTROWS ( Mediciones ), Mediciones[Correcto] = FALSE () ), COUNTROWS ( Mediciones ) )
+
+Mejor región =
+VAR t = FILTER ( ADDCOLUMNS ( VALUES ( Regiones[Región] ), "@p50", [Latencia P50 (ms)] ), NOT ISBLANK ( [@p50] ) )
+RETURN MAXX ( TOPN ( 1, t, [@p50], ASC ), Regiones[Región] )
+
+Mejor P50 (ms) =
+MINX ( FILTER ( ADDCOLUMNS ( VALUES ( Regiones[Región] ), "@p50", [Latencia P50 (ms)] ), NOT ISBLANK ( [@p50] ) ), [@p50] )
+
+// Úsala en Formato > Colores > fx (Formato condicional > Valor del campo) para pintar barras o puntos del mapa
+Color latencia =
+VAR p = [Latencia P50 (ms)]
+RETURN SWITCH ( TRUE (), ISBLANK ( p ), "#9CA3AF", p < 50, "#22C55E", p < 100, "#84CC16", p < 175, "#F59E0B", "#EF4444" )
+
+// Diferencia frente a la mejor región visible (útil en tablas)
+Diferencia con la mejor (ms) =
+VAR mejor = CALCULATE ( [Mejor P50 (ms)], ALLSELECTED ( Regiones ) )
+RETURN IF ( ISBLANK ( [Latencia P50 (ms)] ), BLANK (), [Latencia P50 (ms)] - mejor )

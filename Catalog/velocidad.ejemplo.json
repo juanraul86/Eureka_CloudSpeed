@@ -1,0 +1,21 @@
+{
+  "_ayuda": "Endpoints del test de velocidad. Lo más fácil es generarlos con Herramientas\\Crear-CuentasVelocidad.ps1. downloadUrl: archivo grande (50-100 MiB) con permiso de lectura. uploadUrl: SAS de contenedor de Azure con permisos de creación, escritura y borrado (uploadKind = azure-container) o URL PUT prefirmada de S3 (uploadKind = url).",
+  "endpoints": [
+    {
+      "cloud": "Azure",
+      "code": "westeurope",
+      "name": "West Europe",
+      "downloadUrl": "https://<cuenta>.blob.core.windows.net/descarga/prueba-100MiB.bin?<sas-lectura>",
+      "uploadUrl": "https://<cuenta>.blob.core.windows.net/subida?<sas-contenedor-cwd>",
+      "uploadKind": "azure-container"
+    },
+    {
+      "cloud": "AWS",
+      "code": "eu-south-2",
+      "name": "Europe (Spain)",
+      "downloadUrl": "https://<bucket>.s3.eu-south-2.amazonaws.com/prueba-100MiB.bin?<firma-get>",
+      "uploadUrl": "https://<bucket>.s3.eu-south-2.amazonaws.com/subida/prueba.bin?<firma-put>",
+      "uploadKind": "url"
+    }
+  ]
+}

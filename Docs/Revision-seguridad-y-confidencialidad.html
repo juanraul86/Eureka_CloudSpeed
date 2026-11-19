@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revisión de seguridad · Eureka_CloudSpeed</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <h1>Revisión de seguridad y confidencialidad · v2</h1>
+  <p>Eureka_CloudSpeed 1.3.0 · código, scripts de Azure y AWS, datos personales y recursos en la nube · 19/11/2026</p>
+  <nav><a href="index.html">Inicio</a><a href="Manual-de-usuario.html">Manual de uso</a><a href="Documentacion-tecnica.html">Documentación técnica</a><a href="Bitacora-de-versiones.html">Bitácora de versiones</a></nav>
+</header>
+<main>
+
+<section>
+  <h2>Resultado</h2>
+  <div class="cards">
+    <div class="card"><b><span class="st ok">15 de 16 OK</span></b><span>controles automáticos de <code>Herramientas\Verificar-Cumplimiento.ps1</code></span></div>
+    <div class="card"><b>10 + 2 corregidos</b><span>hallazgos de la v1 de la revisión y 2 nuevos de privacidad detectados en esta</span></div>
+    <div class="card"><b>0 recursos de prueba</b><span>activos en AWS ni en Azure (comprobado en vivo)</span></div>
+    <div class="card"><b><span class="st wa">1 pendiente</span></b><span>firma de código de los ejecutables: depende de tu alta en SignPath o de un certificado de una CA reconocida</span></div>
+  </div>
+  <p class="note" style="margin-top:14px"><b>Alcance.</b> Revisión técnica del código fuente, los scripts de aprovisionamiento y la configuración resultante frente a OWASP (aplicación), CIS Benchmarks y Microsoft Cloud Security Benchmark (Azure Storage), AWS Foundational Security Best Practices (S3) y los principios del RGPD y del ENS. <b>No es una auditoría ni una certificación</b>: para declarar cumplimiento formal (ENS, ISO 27001, SOC 2…) hace falta una auditoría independiente del entorno donde se use.</p>
+</section>
+
+<section>
+  <h2>1. Verificación automática (19/11/2026)</h2>
+  <p>Ejecutada con <code>Herramientas\Verificar-Cumplimiento.ps1</code> sobre el código de la versión 1.3.0. Se repite antes de publicar cada versión.</p>
+  <table>
+    <tr><th>Id</th><th>Control</th><th>Resultado</th><th>Evidencia</th></tr>
+    <tr><td>S1</td><td>Sin secretos en claro en código y documentación (SAS, firmas S3, claves de acceso, claves privadas)</td><td><span class="st ok">OK</span></td><td>63 archivos revisados (solo aparecen los valores de ejemplo públicos de la documentación de AWS)</td></tr>
+    <tr><td>S2</td><td>Validación de certificados TLS sin desactivar</td><td><span class="st ok">OK</span></td><td>Sin <code>ServerCertificateValidationCallback</code> ni equivalentes</td></tr>
+    <tr><td>S3</td><td>Sin ejecución dinámica de código</td><td><span class="st ok">OK</span></td><td>Sin <code>Invoke-Expression</code> ni <code>ScriptBlock::Create</code></td></tr>
+    <tr><td>S4</td><td>Conexiones salientes solo por HTTPS</td><td><span class="st ok">OK</span></td><td>Todas las URL de red son https</td></tr>
+    <tr><td>S5</td><td><code>Start-Process</code> sin destinos no validados</td><td><span class="st ok">OK</span></td><td>Destinos fijos, carpetas locales o URL https validadas con patrón estricto</td></tr>
+    <tr><td>S6</td><td>Los paquetes no incluyen configuración, histórico ni exportaciones</td><td><span class="st ok">OK</span></td><td>ZIP de distribución revisado</td></tr>
+    <tr><td>S7</td><td><code>.gitignore</code> excluye Config, Datos y Exportaciones</td><td><span class="st ok">OK</span></td><td>Revisado</td></tr>
+    <tr><td>S8</td><td><code>Config\velocidad.json</code> cifrado y accesible solo por el usuario</td><td><span class="st ok">OK</span></td><td>NTFS: usuario, SYSTEM y Administradores; URL con prefijo <code>dpapi:</code></td></tr>
+    <tr><td>S9</td><td>La verificación de integridad del .exe cubre .ps1, .psm1, .xaml, .cs y .json</td><td><span class="st ok">OK</span></td><td><code>Build\Launcher.cs</code></td></tr>
+    <tr><td>P1</td><td>Conservación limitada por defecto y borrado del histórico</td><td><span class="st ok">OK</span></td><td>12 meses; <code>Invoke-CsRetention</code> al arrancar; <code>Remove-CsHistory</code> en Ayuda</td></tr>
+    <tr><td>P2</td><td>El nombre del equipo solo sale a través del seudónimo</td><td><span class="st ok">OK</span></td><td>Todas las salidas usan <code>Get-CsMachine</code></td></tr>
+    <tr><td>P3</td><td>Consulta a ipinfo.io solo desde el botón "Ver mi conexión"</td><td><span class="st ok">OK</span></td><td>Una única función (<code>Show-CsConnection</code>)</td></tr>
+    <tr><td>P4</td><td>Sin telemetría ni analítica</td><td><span class="st ok">OK</span></td><td>Ninguna referencia</td></tr>
+    <tr><td>C1</td><td>AWS: ningún bucket de prueba activo</td><td><span class="st ok">OK</span></td><td>0 buckets <code>cspeed-*</code> en la cuenta</td></tr>
+    <tr><td>C2</td><td>Azure: ningún grupo de recursos de prueba activo</td><td><span class="st ok">OK</span></td><td>No existe <code>rg-eureka-cloudspeed</code></td></tr>
+    <tr><td>R1</td><td>Ejecutables firmados con un certificado de confianza</td><td><span class="st wa">Pendiente</span></td><td>NotSigned. Ver apartado 6.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>2. Hallazgos corregidos</h2>
+  <table>
+    <tr><th>#</th><th>Versión</th><th>Hallazgo</th><th>Corrección</th></tr>
+    <tr><td>1</td><td>1.2.0</td><td>URL firmadas (SAS de Azure, firmas de S3) en texto plano</td><td>Cifrado DPAPI; cifrado automático de las pegadas a mano; NTFS restringido</td></tr>
+    <tr><td>2</td><td>1.2.0</td><td>SAS de 365 días no revocables</td><td>Políticas de acceso almacenadas, 90 días, <code>-Revocar</code>, <code>-Renovar</code>, <code>-RotarClaves</code></td></tr>
+    <tr><td>3</td><td>1.2.0</td><td>Parámetro añadido a las URL firmadas (rompía la firma de S3)</td><td>La URL se usa intacta</td></tr>
+    <tr><td>4</td><td>1.2.0</td><td>Nombre del equipo en exportaciones (dato personal)</td><td>Seudónimo opcional</td></tr>
+    <tr><td>5</td><td>1.2.0</td><td>Inyección de fórmulas en CSV</td><td>Prefijo <code>'</code> en valores que empiezan por <code>= + - @</code></td></tr>
+    <tr><td>6</td><td>1.2.0</td><td>Integridad sin cubrir los JSON del catálogo</td><td>Incluidos en el manifiesto SHA-256</td></tr>
+    <tr><td>7</td><td>1.2.0</td><td><code>Start-Process</code> con URL del catálogo sin validar</td><td>Solo <code>https://</code> con patrón estricto</td></tr>
+    <tr><td>8</td><td>1.2.0</td><td>Falta de endurecimiento en S3</td><td>Script con Block Public Access, SSE-S3, TLS ≥ 1.2, ciclo de vida e IAM mínima</td></tr>
+    <tr><td>9</td><td>1.3.0</td><td>Configuración de velocidad que podía quedar vacía o a medias</td><td>Copia de seguridad, escritura atómica y validación antes de guardar</td></tr>
+    <tr><td>10</td><td>1.3.0</td><td>Recursos de prueba que podían quedarse en la nube generando cargos</td><td><code>Probar-Velocidad.ps1</code> borra siempre (incluso si falla) y verifica; <code>-Eliminar -Confirmar</code></td></tr>
+    <tr><td>11</td><td>1.3.0</td><td>Copia <code>velocidad.json.bak</code> sin permisos restringidos</td><td>NTFS limitado al usuario, SYSTEM y Administradores</td></tr>
+    <tr><td>12</td><td>1.3.0</td><td>Histórico sin plazo de conservación (RGPD, art. 5.1.e)</td><td>12 meses por defecto, configurable, y borrado completo (art. 17)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>3. Privacidad y protección de datos (RGPD)</h2>
+  <table>
+    <tr><th>Principio</th><th>Cómo se cumple</th><th>Estado</th></tr>
+    <tr><td>Minimización (art. 5.1.c)</td><td>Solo se guardan tiempos de medición, regiones, etiqueta y nombre del equipo (seudonimizable). Sin datos de cuentas ni credenciales.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Limitación del plazo (art. 5.1.e)</td><td>Conservación de 12 meses por defecto con borrado automático.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Integridad y confidencialidad (art. 5.1.f y 32)</td><td>Datos en el equipo del usuario; secretos con DPAPI; NTFS restringido; HTTPS con certificados validados.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Supresión (art. 17)</td><td>Botón "Borrar todo el histórico" en Ayuda.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Privacidad desde el diseño (art. 25)</td><td>Sin telemetría; conexiones a terceros solo al usar cada función; seudónimo; nada se envía a terceros salvo la IP inherente a cualquier conexión.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Transparencia (art. 13)</td><td>Ayuda, manual y README listan todas las conexiones de red y para qué sirven.</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Transferencias internacionales</td><td>ipinfo.io (EE. UU.) recibe la IP pública solo si pulsas "Ver mi conexión"; las páginas de estado (Microsoft, AWS, Google, GitHub, Cloudflare) y los servicios comprobados reciben la IP como en cualquier visita web, solo al usar Estado de servicios.</td><td><span class="st ok">Informado</span></td></tr>
+  </table>
+  <p class="mu">Uso en una organización: si el histórico incluye el nombre real de los equipos, la organización debe incluir este tratamiento en su registro de actividades. Con el seudónimo activado no identifica directamente a nadie.</p>
+</section>
+
+<section>
+  <h2>4. Azure Storage (Crear-CuentasVelocidad.ps1)</h2>
+  <table>
+    <tr><th>Recomendación (CIS / Microsoft Cloud Security Benchmark)</th><th>Configuración</th><th>Estado</th></tr>
+    <tr><td>Exigir HTTPS</td><td><code>--https-only true</code>; SAS con <code>spr=https</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>TLS mínimo 1.2</td><td><code>--min-tls-version TLS1_2</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Sin acceso anónimo</td><td><code>--allow-blob-public-access false</code>; contenedores privados</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Sin replicación entre inquilinos</td><td><code>--allow-cross-tenant-replication false</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>SAS mínimas, cortas y revocables</td><td>Lectura <code>r</code>; subida <code>cwd</code>; políticas almacenadas; 90 días</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Rotación de claves</td><td><code>-RotarClaves</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Minimización de datos</td><td>Ciclo de vida 24 h y borrado al terminar</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Inventario y borrado</td><td>Grupo de recursos propio, etiqueta <code>app=Eureka_CloudSpeed</code>, <code>-Eliminar</code>, verificación en <code>Probar-Velocidad.ps1</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Selección de directorio</td><td><code>-Tenant</code> para cuentas en varios directorios</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Desactivar la clave compartida</td><td>No aplicable: las SAS de servicio se firman con la clave. Alternativa: SAS de delegación de usuario (7 días)</td><td><span class="st wa">Aceptado</span></td></tr>
+    <tr><td>Red privada / firewall</td><td>No aplicable: el test necesita llegar desde Internet; los datos son aleatorios</td><td><span class="st wa">Aceptado</span></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>5. Amazon S3 (Crear-BucketsVelocidad.ps1)</h2>
+  <table>
+    <tr><th>Recomendación (AWS FSBP / CIS AWS)</th><th>Configuración</th><th>Estado</th></tr>
+    <tr><td>S3.1 / S3.8 Block Public Access</td><td>Las cuatro opciones activadas</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>S3.5 Solo TLS</td><td>Deniega <code>aws:SecureTransport=false</code> y <code>s3:TlsVersion &lt; 1.2</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>S3.12 Sin ACL</td><td><code>BucketOwnerEnforced</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Cifrado en reposo</td><td>SSE-S3 con Bucket Key</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>S3.13 Ciclo de vida</td><td>Subidas a 24 h; multiparte incompletas a 24 h</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Acceso temporal y mínimo</td><td>URL prefirmadas GET + PUT de claves fijas; 7 días como máximo (menos con credenciales temporales)</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Mínimo privilegio IAM</td><td><code>aws-iam-politica-minima.json</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Credenciales temporales y cierre de sesión</td><td><code>aws login</code> (sin claves permanentes) y opción de cerrar la sesión al terminar</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>Borrado y verificación</td><td><code>-Eliminar</code> y comprobación de 0 buckets <code>cspeed-*</code></td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>S3.9 Registros de acceso / CloudTrail de datos</td><td>Opcional, con coste</td><td><span class="st wa">Opcional</span></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>6. Pendiente y riesgos aceptados</h2>
+  <table>
+    <tr><th>Elemento</th><th>Situación</th><th>Estado</th></tr>
+    <tr><td><b>Firma de código</b></td><td>Los .exe no están firmados: Smart App Control los bloquea. <b>Acción tuya</b>: alta del proyecto en SignPath Foundation (como Eureka_Utils) o certificado de firma de una CA reconocida. Después: <code>Build\Build-Exe.ps1 -CertificateThumbprint &lt;huella&gt;</code> y volver a ejecutar la verificación. Mientras tanto, <code>Eureka_CloudSpeed.cmd</code> es la forma soportada de arrancar.</td><td><span class="st wa">Pendiente</span></td></tr>
+    <tr><td><code>-ExecutionPolicy Bypass</code></td><td>Solo en el proceso de la herramienta; con los scripts firmados se podrá usar <code>AllSigned</code></td><td><span class="st wa">Aceptado</span></td></tr>
+    <tr><td>Arranque por .cmd sin verificación SHA-256</td><td>Protección por permisos NTFS de la carpeta; el .exe sí verifica</td><td><span class="st wa">Aceptado</span></td></tr>
+    <tr><td>Fuentes públicas sin garantía</td><td>Lista de precios de EC2, endpoints de medición y APIs de páginas de estado: si cambian, la app muestra "Sin datos" o error, sin impacto en la seguridad</td><td><span class="st wa">Aceptado</span></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>7. Cómo repetir esta verificación</h2>
+<pre>powershell -ExecutionPolicy Bypass -File .\Build\Build-Exe.ps1
+powershell -ExecutionPolicy Bypass -File .\Herramientas\Verificar-Cumplimiento.ps1</pre>
+  <p>Código de salida 0 = todos los controles OK. Para que C1 compruebe AWS, inicia sesión antes (<code>aws login --region eu-north-1</code>). Registra el resultado en la <a href="Bitacora-de-versiones.html">bitácora</a>.</p>
+</section>
+
+</main>
+</body>
+</html>

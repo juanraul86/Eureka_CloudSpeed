@@ -1,0 +1,80 @@
+<ScrollViewer xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" VerticalScrollBarVisibility="Auto">
+  <StackPanel MaxWidth="980" HorizontalAlignment="Left">
+    <StackPanel.Resources>
+      <Style TargetType="Expander">
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Padding" Value="4,6"/>
+        <Setter Property="Background" Value="{DynamicResource Surface}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+      </Style>
+      <Style TargetType="TextBlock" x:Key="Answer">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="24,4,12,8"/>
+        <Setter Property="LineHeight" Value="20"/>
+      </Style>
+    </StackPanel.Resources>
+    <TextBlock Style="{StaticResource PageTitle}" Text="Ayuda y preguntas frecuentes"/>
+    <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,14" Text="Cómo mide Eureka_CloudSpeed, cómo interpretar los resultados y de dónde salen los datos."/>
+
+    <Expander Header="¿Qué es la latencia y cuándo es buena?" IsExpanded="True">
+      <TextBlock Style="{StaticResource Answer}" Text="Es el tiempo que tarda un paquete en ir a la región y volver (RTT). Como referencia: menos de 50 ms es excelente (aplicaciones interactivas, escritorios remotos, bases de datos), de 50 a 100 ms es bueno para casi todo, de 100 a 175 ms se nota en aplicaciones muy interactivas, y más de 175 ms solo es razonable para tareas en segundo plano o copias de seguridad. Eureka_CloudSpeed usa esos mismos colores."/>
+    </Expander>
+    <Expander Header="¿Cómo mide la latencia?">
+      <TextBlock Style="{StaticResource Answer}" Text="Abre una conexión TCP al puerto 443 de un endpoint regional (Azure AI services en Azure, DynamoDB en AWS) y cronometra cuánto tarda en establecerse: ese tiempo equivale a un viaje de ida y vuelta. La resolución DNS se hace antes y la primera conexión de cada región no cuenta (calentamiento). Se muestran la mediana (P50), el percentil 95, el mínimo, el jitter (variación entre muestras consecutivas) y la pérdida (conexiones sin respuesta)."/>
+    </Expander>
+    <Expander Header="¿Por qué la mediana y no la media?">
+      <TextBlock Style="{StaticResource Answer}" Text="Un solo pico (una retransmisión, otra aplicación descargando) dispara la media pero apenas mueve la mediana. El P95 indica cómo de estable es la conexión: si está muy por encima del P50, hay variaciones importantes."/>
+    </Expander>
+    <Expander Header="¿Refleja el rendimiento real de mi aplicación?">
+      <TextBlock Style="{StaticResource Answer}" Text="Es la base: cada petición de una aplicación paga al menos una latencia de ida y vuelta, y el saludo TLS suma una o dos más (activa 'Medir también el saludo TLS' para verlo). Pero el rendimiento final también depende del ancho de banda, del número de peticiones, de la caché y del propio servicio. Usa el test de velocidad para el ancho de banda."/>
+    </Expander>
+    <Expander Header="¿Por qué mis resultados difieren de PsPing u otra web?">
+      <TextBlock Style="{StaticResource Answer}" Text="Cada herramienta mide contra un endpoint distinto (almacenamiento, servicios de IA, frontales HTTP) y por un camino algo diferente. Las webs miden desde el navegador, que añade su propia sobrecarga y limita las conexiones; esta herramienta mide desde la red real del equipo (VPN, proxy, Wi-Fi). Compara siempre con el mismo método y varias muestras."/>
+    </Expander>
+    <Expander Header="¿Por qué faltan algunas regiones?">
+      <TextBlock Style="{StaticResource Answer}" Text="Algunas regiones de Azure no tienen un endpoint público regional conocido (por ejemplo, regiones de acceso restringido o nuevas). Aparecen como 'Sin endpoint'. Para medirlas, crea una cuenta de almacenamiento en esa región y escribe su host en Catalog\regions.json, o usa el script de cuentas de velocidad."/>
+    </Expander>
+    <Expander Header="¿Cómo funciona el test de velocidad y cuánto cuesta?">
+      <TextBlock Style="{StaticResource Answer}" Text="Descarga un archivo y sube datos aleatorios a una cuenta de almacenamiento de la región, con una o cuatro conexiones en paralelo, durante el tiempo elegido (por defecto 12 s y como máximo 200 MiB por etapa). Mientras transfiere, mide la latencia 'con carga': si sube mucho, tu conexión se satura (bufferbloat). Las cuentas son tuyas: el almacenamiento cuesta céntimos al mes y la descarga genera tráfico de salida de Azure (unos 0,08 USD por GB, los primeros 100 GB al mes gratis). Los datos subidos se borran al terminar."/>
+    </Expander>
+    <Expander Header="¿Son privados mis resultados?">
+      <TextBlock Style="{StaticResource Answer}" Text="Sí. Todo se guarda en tu equipo (carpetas Datos y Exportaciones) y no hay telemetría. La herramienta solo se conecta a: los endpoints de Azure y AWS que mides; las fuentes públicas de precios y de rangos de IP cuando abres esas secciones; las páginas de estado públicas y los servicios comprobados (Microsoft, AWS, Google, GitHub, Cloudflare y Wikipedia como control) cuando abres Estado de servicios o activas la comprobación automática; tus propias cuentas de almacenamiento en el test de velocidad; e ipinfo.io solo si pulsas 'Ver mi conexión'. Esas conexiones no envían datos tuyos: como en cualquier visita web, el servidor ve tu IP pública. El histórico se borra solo al superar el plazo de conservación (12 meses por defecto) y puedes borrarlo entero más abajo."/>
+    </Expander>
+    <Expander Header="¿Cómo interpreto el Estado de servicios?">
+      <TextBlock Style="{StaticResource Answer}" Text="Arriba ves lo que publica cada proveedor; abajo, si sus servicios clave responden desde tu red (DNS, conexión y HTTPS; un 401 o un 302 es normal en un inicio de sesión). El aviso combina ambos: incidencia confirmada (publicada y se nota), caída no publicada (falla desde tu red pero el proveedor no dice nada: puede ser una caída global que aún no han publicado o algo local como proxy, firewall o VPN), página de estado caída (típico de caídas globales: consulta las cuentas oficiales del proveedor en redes sociales) o problema de tu conexión (no responde nada, tampoco el sitio de control). Activa 'Guardar histórico' para tener evidencias con fecha y hora si necesitas reclamar por el SLA."/>
+    </Expander>
+    <Expander Header="¿Qué permite Power BI gratuito?">
+      <TextBlock Style="{StaticResource Answer}" Text="Con Power BI Desktop (gratuito) puedes crear el informe, actualizarlo y enviar el archivo .pbix a quien también tenga Power BI Desktop. Compartirlo en powerbi.com con otras personas o programar actualizaciones en la nube requiere licencia Pro, Premium por usuario o Fabric."/>
+    </Expander>
+
+    <GroupBox Header="Privacidad: tus datos" Margin="0,12,0,0">
+      <StackPanel>
+        <TextBlock TextWrapping="Wrap" Style="{StaticResource Muted}" Text="El histórico (mediciones, sesiones, tests de velocidad y estado de servicios) se guarda solo en este equipo, en la carpeta Datos. Lo que supere el plazo de conservación se borra automáticamente al abrir la aplicación."/>
+        <WrapPanel Margin="0,10,0,0" VerticalAlignment="Center">
+          <TextBlock Text="Conservar el histórico" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <ComboBox x:Name="CmbRetention" Width="150" Margin="0,0,16,0">
+            <ComboBoxItem Content="3 meses" Tag="3"/><ComboBoxItem Content="6 meses" Tag="6"/><ComboBoxItem Content="12 meses" Tag="12"/>
+            <ComboBoxItem Content="24 meses" Tag="24"/><ComboBoxItem Content="Sin límite" Tag="0"/>
+          </ComboBox>
+          <Button x:Name="BtnPurgeNow" Content="Aplicar ahora" Margin="0,0,8,0"/>
+          <Button x:Name="BtnDeleteHistory" Style="{StaticResource DangerButton}" Content="Borrar todo el histórico" Margin="0"/>
+        </WrapPanel>
+        <TextBlock x:Name="TxtPrivacy" Style="{StaticResource Muted}" Margin="0,6,0,0"/>
+      </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="Fuentes de datos y créditos" Margin="0,12,0,0">
+      <TextBlock TextWrapping="Wrap" LineHeight="21">
+        <Run Text="• Precios: API pública de precios de Azure (prices.azure.com) y lista de precios pública de EC2 de AWS, consultadas en vivo."/><LineBreak/>
+        <Run Text="• Rangos de IP: Service Tags de Microsoft (Public, China, US Government) y ip-ranges.json de AWS, descargados al pulsar."/><LineBreak/>
+        <Run Text="• Latencia entre regiones: estadísticas de ida y vuelta publicadas por Microsoft."/><LineBreak/>
+        <Run Text="• Datos de regiones, zonas y especificaciones de VM: proyecto azure-speed-test de blrchen (licencia MIT, ver Catalog\LICENSE-azure-speed-test.txt)."/><LineBreak/>
+        <Run Text="• Mapa: Natural Earth (dominio público) a través de world-atlas (licencia ISC)."/><LineBreak/>
+        <Run Text="• Eureka_CloudSpeed · Juan Raúl Ruiz · licencia MIT."/>
+      </TextBlock>
+    </GroupBox>
+  </StackPanel>
+</ScrollViewer>

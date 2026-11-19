@@ -1,0 +1,39 @@
+{
+ "source": "Valores de Get-AzEnvironment (Az.Accounts) y documentación de Microsoft. Si Az.Accounts está instalado, la sección los lee directamente.",
+ "clouds": [
+  {"name": "Azure global", "id": "AzureCloud", "nick": "Pública", "portal": "https://portal.azure.com", "operator": "Microsoft",
+   "market": "Empresas y organizaciones de todo el mundo.",
+   "description": "La nube comercial con el mayor catálogo de servicios y la llegada más rápida de novedades. Despliegue en decenas de regiones y certificaciones globales (ISO, SOC, ENS, RGPD, HIPAA…)."},
+  {"name": "Azure US Government", "id": "AzureUSGovernment", "nick": "Fairfax", "portal": "https://portal.azure.us", "operator": "Microsoft (personal estadounidense verificado)",
+   "market": "Administraciones de EE. UU. (federal, estatal, local y tribal) y sus contratistas autorizados.",
+   "description": "Nube físicamente aislada para cargas del gobierno de EE. UU. Cumple FedRAMP High, DoD IL4/IL5, CJIS e IRS 1075; los datos permanecen en centros de datos gubernamentales de EE. UU."},
+  {"name": "Azure China", "id": "AzureChinaCloud", "nick": "Mooncake", "portal": "https://portal.azure.cn", "operator": "21Vianet",
+   "market": "Organizaciones que operan en China continental.",
+   "description": "Operada por 21Vianet y separada por completo de Azure global, con cuentas y suscripciones propias. Los datos residen en China y se rige por la normativa china de ciberseguridad."}
+ ],
+ "properties": [
+  ["ManagementPortalUrl", "https://portal.azure.com/", "https://portal.azure.us/", "https://portal.azure.cn/"],
+  ["ActiveDirectoryAuthority", "https://login.microsoftonline.com/", "https://login.microsoftonline.us/", "https://login.chinacloudapi.cn/"],
+  ["ResourceManagerUrl", "https://management.azure.com/", "https://management.usgovcloudapi.net/", "https://management.chinacloudapi.cn/"],
+  ["ServiceManagementUrl", "https://management.core.windows.net/", "https://management.core.usgovcloudapi.net/", "https://management.core.chinacloudapi.cn/"],
+  ["ActiveDirectoryServiceEndpointResourceId", "https://management.core.windows.net/", "https://management.core.usgovcloudapi.net/", "https://management.core.chinacloudapi.cn/"],
+  ["MicrosoftGraphUrl", "https://graph.microsoft.com/", "https://graph.microsoft.us/", "https://microsoftgraph.chinacloudapi.cn/"],
+  ["GalleryUrl", "https://gallery.azure.com/", "https://gallery.usgovcloudapi.net/", "https://gallery.chinacloudapi.cn/"],
+  ["StorageEndpointSuffix", "core.windows.net", "core.usgovcloudapi.net", "core.chinacloudapi.cn"],
+  ["SqlDatabaseDnsSuffix", ".database.windows.net", ".database.usgovcloudapi.net", ".database.chinacloudapi.cn"],
+  ["AzureKeyVaultDnsSuffix", "vault.azure.net", "vault.usgovcloudapi.net", "vault.azure.cn"],
+  ["AzureKeyVaultServiceEndpointResourceId", "https://vault.azure.net", "https://vault.usgovcloudapi.net", "https://vault.azure.cn"],
+  ["TrafficManagerDnsSuffix", "trafficmanager.net", "usgovtrafficmanager.net", "trafficmanager.cn"],
+  ["ContainerRegistryEndpointSuffix", "azurecr.io", "azurecr.us", "azurecr.cn"],
+  ["AzureOperationalInsightsEndpoint", "https://api.loganalytics.io/v1", "https://api.loganalytics.us/v1", "https://api.loganalytics.azure.cn/v1"],
+  ["AzureAnalysisServicesEndpointSuffix", "asazure.windows.net", "asazure.usgovcloudapi.net", "asazure.chinacloudapi.cn"],
+  ["AzureSynapseAnalyticsEndpointSuffix", "dev.azuresynapse.net", "dev.azuresynapse.usgovcloudapi.net", "dev.azuresynapse.azure.cn"],
+  ["BatchEndpointResourceId", "https://batch.core.windows.net/", "https://batch.core.usgovcloudapi.net/", "https://batch.chinacloudapi.cn/"],
+  ["AzureAttestationServiceEndpointSuffix", "attest.azure.net", "—", "—"],
+  ["AzureDataLakeStoreFileSystemEndpointSuffix", "azuredatalakestore.net", "—", "—"],
+  ["App Service (dominio de las aplicaciones)", "azurewebsites.net", "azurewebsites.us", "chinacloudsites.cn"],
+  ["Service Bus / Event Hubs", "servicebus.windows.net", "servicebus.usgovcloudapi.net", "servicebus.chinacloudapi.cn"],
+  ["Cosmos DB", "documents.azure.com", "documents.azure.us", "documents.azure.cn"],
+  ["Azure AI services", "cognitiveservices.azure.com", "cognitiveservices.azure.us", "cognitiveservices.azure.cn"]
+ ]
+}

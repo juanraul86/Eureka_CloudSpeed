@@ -1,0 +1,54 @@
+<ScrollViewer xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" VerticalScrollBarVisibility="Auto">
+  <StackPanel MaxWidth="1100" HorizontalAlignment="Left">
+    <TextBlock Style="{StaticResource PageTitle}" Text="Comandos de prueba de red"/>
+    <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,12" Text="Genera comandos para medir la latencia TCP al puerto 443 de una región desde cualquier equipo Windows o Linux, sin instalar Eureka_CloudSpeed. Son útiles para comparar con otros equipos o adjuntar a una incidencia."/>
+    <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+      <WrapPanel>
+        <StackPanel Width="300" Margin="0,0,16,0"><Label Content="Región"/><ComboBox x:Name="CmbCmdRegion"/></StackPanel>
+        <StackPanel Width="110" Margin="0,0,16,0"><Label Content="Muestras"/><TextBox x:Name="TxtCmdN" Text="20"/></StackPanel>
+        <StackPanel Width="110" Margin="0,0,16,0"><Label Content="Calentamiento"/><TextBox x:Name="TxtCmdW" Text="5"/></StackPanel>
+        <StackPanel Width="110" Margin="0,0,16,0"><Label Content="Puerto"/><TextBox x:Name="TxtCmdPort" Text="443"/></StackPanel>
+      </WrapPanel>
+    </Border>
+
+    <GroupBox Header="PsPing (Sysinternals, Windows)">
+      <StackPanel>
+        <TextBlock Style="{StaticResource Muted}" Text="Mide el tiempo de conexión TCP, igual que esta herramienta. Ejecútalo en la carpeta donde descomprimas PsTools; la primera vez pide aceptar la licencia de Sysinternals."/>
+        <DockPanel Margin="0,8,0,0">
+          <Button x:Name="BtnCopyPsping" DockPanel.Dock="Right" Content="Copiar" Margin="8,0,0,0" VerticalAlignment="Top"/>
+          <TextBox x:Name="TxtPsping" Style="{StaticResource Code}"/>
+        </DockPanel>
+        <Button x:Name="BtnPsTools" Content="Descargar PsTools (Microsoft)" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="PowerShell (sin instalar nada)">
+      <StackPanel>
+        <TextBlock Style="{StaticResource Muted}" Text="Test-NetConnection comprueba si el puerto responde. El bucle mide el tiempo de conexión de cada muestra y calcula mínimo, mediana y máximo."/>
+        <DockPanel Margin="0,8,0,6">
+          <Button x:Name="BtnCopyTnc" DockPanel.Dock="Right" Content="Copiar" Margin="8,0,0,0" VerticalAlignment="Top"/>
+          <TextBox x:Name="TxtTnc" Style="{StaticResource Code}"/>
+        </DockPanel>
+        <DockPanel>
+          <Button x:Name="BtnCopyPsLoop" DockPanel.Dock="Right" Content="Copiar" Margin="8,0,0,0" VerticalAlignment="Top"/>
+          <TextBox x:Name="TxtPsLoop" Style="{StaticResource Code}"/>
+        </DockPanel>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="curl (Windows 10+, Linux y macOS)">
+      <StackPanel>
+        <TextBlock Style="{StaticResource Muted}" Text="Muestra por separado la resolución DNS, la conexión TCP y el saludo TLS."/>
+        <DockPanel Margin="0,8,0,0">
+          <Button x:Name="BtnCopyCurl" DockPanel.Dock="Right" Content="Copiar" Margin="8,0,0,0" VerticalAlignment="Top"/>
+          <TextBox x:Name="TxtCurl" Style="{StaticResource Code}"/>
+        </DockPanel>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="Probar ahora desde este equipo">
+      <StackPanel>
+        <Button x:Name="BtnCmdTest" Style="{StaticResource PrimaryButton}" Content="▶  Medir esta región" HorizontalAlignment="Left"/>
+        <TextBox x:Name="TxtCmdResult" Style="{StaticResource Code}" MinHeight="60"/>
+      </StackPanel>
+    </GroupBox>
+  </StackPanel>
+</ScrollViewer>

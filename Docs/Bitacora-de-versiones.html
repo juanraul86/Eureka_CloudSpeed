@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bitácora de versiones · Eureka_CloudSpeed</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <h1>Bitácora de versiones</h1>
+  <p>Qué se ha hecho en cada versión, qué se publica y qué operaciones se han realizado en la nube</p>
+  <nav><a href="index.html">Inicio</a><a href="Manual-de-usuario.html">Manual de uso</a><a href="Documentacion-tecnica.html">Documentación técnica</a><a href="Revision-seguridad-y-confidencialidad.html">Revisión de seguridad</a></nav>
+</header>
+<main>
+
+<section>
+  <h2>Cómo se mantiene esta bitácora</h2>
+  <ul>
+    <li>Cada cambio se registra en la versión en curso. La versión está en <code>Modules\Core.psm1</code> (<code>$script:Version</code>) y en <code>Build\Launcher.cs</code>.</li>
+    <li>Cada compilación genera <code>Dist\MANIFIESTO-v&lt;versión&gt;.txt</code>: fecha, si está firmado, huella SHA-256 de cada artefacto y la lista exacta de archivos publicados. Ese archivo es la prueba de <b>qué se publica en cada versión</b>.</li>
+    <li>Toda operación que crea o borra recursos en Azure o AWS se anota en el <a href="#nube">registro de operaciones en la nube</a>. Norma: lo que se crea para una prueba se borra al terminarla.</li>
+    <li>Formato de versión: <code>MAYOR.MENOR.PARCHE</code> (menor = funciones nuevas; parche = correcciones).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>1.3.0 · 19/11/2026 · Estado de servicios, pruebas sin costes residuales y privacidad</h2>
+  <h3>Nuevo</h3>
+  <ul>
+    <li><b>Sección Estado de servicios</b>: estado oficial de Azure, Microsoft 365 (empresarial y consumo), Power Platform, Azure DevOps, AWS, Google Cloud, Google Workspace, GitHub y Cloudflare; comprobación propia desde la red (DNS, TCP y HTTPS de 20 servicios); diagnóstico combinado para caídas globales con la página de estado caída, caídas no publicadas, incidencias confirmadas y problemas de conexión; comprobación automática; histórico para evidencias de SLA.</li>
+    <li><b><code>Probar-Velocidad.ps1</code></b>: crea, mide y borra siempre lo creado en Azure o AWS, y verifica que no queda nada que genere cargos.</li>
+    <li>Al terminar una prueba se elige <b>mantener o cerrar la sesión</b> de la CLI (<code>-MantenerSesion</code> / <code>-CerrarSesion</code>); <code>-Tenant</code> para cuentas de Azure en varios directorios.</li>
+    <li><code>-Eliminar -Confirmar</code> en los scripts de Azure y AWS (borrado sin pregunta interactiva para pruebas automáticas).</li>
+    <li><b>Conservación del histórico</b> (12 meses por defecto, configurable) y botón <b>Borrar todo el histórico</b> (RGPD, art. 5.1.e y 17).</li>
+    <li><b>Manifiesto de publicación</b> por versión en <code>Dist\</code>.</li>
+    <li>Documentación: técnica, manual de uso, esta bitácora y revisión de seguridad v2.</li>
+  </ul>
+  <h3>Cambios</h3>
+  <ul>
+    <li>S3: una URL de subida por conexión (4); evita el error <code>503 Slow Down</code> al escribir en la misma clave.</li>
+    <li>La sección Velocidad recarga sola los endpoints cuando un script cambia la configuración.</li>
+    <li>Guardado de <code>Config\velocidad.json</code> blindado: copia <code>.bak</code> con permisos restringidos, escritura atómica, validación (una renovación vacía nunca se guarda).</li>
+    <li>Ayuda: preguntas sobre el estado de servicios y lista completa de conexiones de red.</li>
+  </ul>
+  <h3>Correcciones</h3>
+  <ul>
+    <li><code>Crear-BucketsVelocidad.ps1 -Renovar</code>: nombre del objeto de prueba duplicado (<code>prueba-prueba-…</code>) y un caso en el que la configuración quedó vacía.</li>
+    <li>Interpretación de listas JSON en Windows PowerShell 5.1 (Microsoft 365 consumo, AWS Health y Google podían mostrar un estado incorrecto).</li>
+    <li>RSS de Azure vacío interpretado como incidencia.</li>
+    <li>La compilación ya no falla si la aplicación tiene el icono en uso.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>1.2.0 · 19/11/2026 · Revisión de seguridad y AWS</h2>
+  <ul>
+    <li>URL del test de velocidad cifradas con <b>DPAPI</b>; cifrado automático de las pegadas a mano.</li>
+    <li>Azure: SAS con <b>políticas de acceso almacenadas</b> (revocables), 90 días, <code>-Renovar</code>, <code>-Revocar</code>, <code>-RotarClaves</code>; cuentas con HTTPS, TLS 1.2, sin acceso anónimo ni replicación entre inquilinos.</li>
+    <li>AWS: <code>Crear-BucketsVelocidad.ps1</code> (Block Public Access, sin ACL, SSE-S3, TLS ≥ 1.2, ciclo de vida) y firma <b>SigV4</b> propia verificada con el ejemplo oficial de AWS; política IAM mínima.</li>
+    <li>Seudónimo del equipo (<i>Ocultar el nombre del equipo</i>, <code>-Anonimo</code>).</li>
+    <li>CSV protegidos contra inyección de fórmulas.</li>
+    <li>La verificación de integridad del .exe incluye los JSON del catálogo.</li>
+    <li>Solo se abren URL <code>https://</code> procedentes del catálogo.</li>
+    <li>El test de velocidad no modifica las URL firmadas (antes añadía <code>nocache</code>).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>1.1.0 · 19/11/2026 · Paridad con AzureSpeed y AWS</h2>
+  <ul>
+    <li>Nueva interfaz con menú lateral y una página por sección (cargada bajo demanda).</li>
+    <li>Secciones: Velocidad, Latencia entre regiones, Comandos (PsPing y otros), Precios de VM (Azure y EC2), Precios de modelos de IA, Regiones y zonas, Mapa de regiones, Nubes soberanas y entornos, Búsqueda de IP, Rangos de IP y Ayuda.</li>
+    <li>Latencia: prueba rápida de 10 rondas, panel "Tu conexión" y pestaña Mapa.</li>
+    <li>Datos de referencia: azure-speed-test (MIT) y Natural Earth (dominio público).</li>
+    <li>Motor: test de velocidad, rangos de IP y nuevos gráficos (mapa, curva de velocidad, barras).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>1.0.0 · 19/11/2026 · Primera versión</h2>
+  <ul>
+    <li>Medición de latencia en paralelo a 75 regiones de Azure y AWS (TCP 443), con P50, P95, jitter y pérdida.</li>
+    <li>Interfaz WPF claro/oscuro: ranking en directo, gráficos, evolución, Azure vs AWS, modo continuo, etiquetas.</li>
+    <li>Exportaciones: Excel con gráficos nativos (sin Excel instalado), Power BI Desktop (histórico, .pbids, DAX, Power Query), CSV e informe HTML.</li>
+    <li>Modo consola para tareas programadas; lanzador .exe con verificación de integridad y versión portable.</li>
+    <li>Motor compilado en memoria (Smart App Control bloqueaba la DLL en caché) y scripts en UTF-8 con BOM.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Qué se publica en cada versión</h2>
+  <table>
+    <tr><th>Artefacto</th><th>Contenido</th><th>Firmado</th></tr>
+    <tr><td><code>Eureka_CloudSpeed.exe</code></td><td>Lanzador con la lista de huellas SHA-256 del código de esa versión</td><td><span class="st wa">No (pendiente)</span></td></tr>
+    <tr><td><code>Dist\Eureka_CloudSpeed_Portable.exe</code></td><td>Todo en un archivo; se extrae en el perfil del usuario</td><td><span class="st wa">No (pendiente)</span></td></tr>
+    <tr><td><code>Dist\Eureka_CloudSpeed.zip</code></td><td>Carpeta completa sin Datos, Exportaciones ni Config</td><td>—</td></tr>
+    <tr><td><code>Dist\MANIFIESTO-v&lt;versión&gt;.txt</code></td><td>Huellas de los artefactos y lista exacta de archivos</td><td>—</td></tr>
+  </table>
+  <p class="mu">Nunca se publican: <code>Config\</code> (preferencias y URL cifradas), <code>Datos\</code> (histórico y cachés) ni <code>Exportaciones\</code>.</p>
+</section>
+
+<section id="nube">
+  <h2>Registro de operaciones en la nube</h2>
+  <table>
+    <tr><th>Fecha (hora local)</th><th>Nube</th><th>Operación</th><th>Recurso</th><th>Estado final</th></tr>
+    <tr><td>19/11/2026 ~09:55</td><td>AWS (cuenta personal de pruebas, eu-north-1)</td><td>Creación para prueba del test de velocidad</td><td>Bucket <code>cspeed-eu-north-1-&lt;huella&gt;</code> + objeto de 100 MiB</td><td>Borrado</td></tr>
+    <tr><td>19/11/2026 ~09:57–10:05</td><td>AWS</td><td>Renovación de URL y prueba real (58 ms, 420 Mbps de bajada, 617 de subida)</td><td>Mismo bucket</td><td>—</td></tr>
+    <tr><td>19/11/2026 ~10:20</td><td>AWS</td><td>Borrado (<code>-Eliminar -Confirmar</code>) y comprobación: 0 buckets <code>cspeed-*</code></td><td>Mismo bucket</td><td><span class="st ok">Sin recursos</span></td></tr>
+    <tr><td>19/11/2026 ~10:30</td><td>AWS</td><td>Prueba automática <code>Probar-Velocidad.ps1</code>: crear → medir (60 ms, 440/522 Mbps) → borrar → comprobar</td><td>Bucket <code>cspeed-eu-north-1-&lt;huella&gt;</code></td><td><span class="st ok">Sin recursos</span></td></tr>
+    <tr><td>19/11/2026</td><td>Azure (directorio personal)</td><td>Inicio de sesión sin suscripción: no se ha creado nada</td><td>—</td><td><span class="st ok">Sin recursos</span></td></tr>
+  </table>
+  <p class="mu">Comprobación al cierre de esta versión: ningún recurso de prueba activo en AWS ni en Azure.</p>
+</section>
+
+</main>
+</body>
+</html>

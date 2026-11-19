@@ -1,0 +1,12 @@
+# Datos del usuario: nunca se suben (histórico, exportaciones, preferencias y URL cifradas)
+Datos/
+Exportaciones/
+Config/
+Eureka_CloudSpeed_Datos/
+*.bak
+*.tmp
+
+# Artefactos de compilación: los genera GitHub Actions en cada release
+Dist/
+Build/obj/
+*.exe
