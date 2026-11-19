@@ -8,6 +8,8 @@ La bitácora completa (con lo que se publica en cada versión y el registro de o
 - Mensaje claro cuando la cuenta de Azure no tiene ninguna suscripción.
 - `Crear-CuentasVelocidad.ps1` registra el proveedor `Microsoft.Storage` en suscripciones nuevas (antes fallaba con «SubscriptionNotFound»).
 - Mensaje claro cuando una región de Azure no admite clientes nuevos (se propone otra región).
+- Nuevo: modo demostración (`CS_DEMO=1`) que oculta la ruta de datos (con el nombre de usuario) para grabar vídeos.
+- Nuevo: web del proyecto en GitHub Pages (https://juanraul86.github.io/Eureka_CloudSpeed/).
 - Privacidad: la bitácora ya no muestra datos de la cuenta de AWS de pruebas; el historial público se ha rehecho sin ellos.
 
 ## 1.3.0 · 19/11/2026

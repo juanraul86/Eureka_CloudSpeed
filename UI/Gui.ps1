@@ -354,8 +354,8 @@ function Show-CsGui {
     $win.Language = [System.Windows.Markup.XmlLanguage]::GetLanguage('es-ES')
     $icon = Join-Path (Get-CsRoot) 'UI\cloudspeed.ico'
     if (Test-Path $icon) { try { $win.Icon = [System.Windows.Media.Imaging.BitmapFrame]::Create([Uri]$icon) } catch { } }
-    # En las capturas para documentación pública no se muestra la ruta real (contiene el nombre de usuario)
-    $script:Ui.TxtVersion.Text = "v$(Get-CsVersion) · datos: $(if ($env:CS_CAPTURE) { '…\Eureka_CloudSpeed' } else { Get-CsDataRoot })"
+    # En capturas y grabaciones públicas (CS_CAPTURE o CS_DEMO) no se muestra la ruta real (contiene el nombre de usuario)
+    $script:Ui.TxtVersion.Text = "v$(Get-CsVersion) · datos: $(if ($env:CS_CAPTURE -or $env:CS_DEMO) { '…\Eureka_CloudSpeed' } else { Get-CsDataRoot })"
 
     # Filas
     $script:Rows = New-Object 'System.Collections.ObjectModel.ObservableCollection[CloudSpeed.RegionRow]'
