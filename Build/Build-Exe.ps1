@@ -79,7 +79,7 @@ if (-not (Test-Path $uiIco) -or (Get-FileHash $ico).Hash -ne (Get-FileHash $uiIc
 }
 
 # ---------------------------------------------------------------- payload
-$skip = '^(\.git|\.github|\.signpath|Tests|Build|Dist|Datos|Exportaciones|Config|Docs\\capturas-temp|Eureka_CloudSpeed_Datos)(\\|$)|\.exe$|\.log$|\.(bak|tmp)$|^\.gitignore$'
+$skip = '^(\.git|\.github|\.signpath|Tests|Build|Dist|Datos|Exportaciones|Config|Docs\\capturas-temp|Eureka_CloudSpeed_Datos|Difusion)(\\|$)|\.exe$|\.log$|\.(bak|tmp)$|^(\.gitignore|\.nojekyll|index\.html|robots\.txt|sitemap\.xml)$'
 $files = Get-ChildItem $root -Recurse -File -Force | Where-Object { $_.FullName.Substring($root.Length + 1) -notmatch $skip }
 Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
 function New-CsZip([string]$Path, $Items, [string]$Prefix) {
@@ -125,7 +125,7 @@ else {
 }
 
 # ---------------------------------------------------------------- ZIP de distribución (incluye Eureka_CloudSpeed.exe)
-$files2 = Get-ChildItem $root -Recurse -File -Force | Where-Object { $_.FullName.Substring($root.Length + 1) -notmatch '^(\.git|Dist|Build\\obj|Datos|Exportaciones|Config|Eureka_CloudSpeed_Datos)(\\|$)|\.log$' }
+$files2 = Get-ChildItem $root -Recurse -File -Force | Where-Object { $_.FullName.Substring($root.Length + 1) -notmatch '^(\.git|Dist|Build\\obj|Datos|Exportaciones|Config|Eureka_CloudSpeed_Datos|Difusion)(\\|$)|\.log$|\.(bak|tmp)$' }
 New-CsZip (Join-Path $dist 'Eureka_CloudSpeed.zip') $files2 'Eureka_CloudSpeed/'
 
 # ---------------------------------------------------------------- manifiesto de publicación (qué se publica en esta versión)

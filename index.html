@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eureka_CloudSpeed · Test de latencia y velocidad a Azure y AWS para Windows (gratis)</title>
+<meta name="description" content="Eureka_CloudSpeed: aplicación portable y gratuita para Windows que mide la latencia y la velocidad desde tu red a 75 regiones de Azure y AWS, muestra el estado de Azure, Microsoft 365 y AWS, detecta caídas globales y exporta a Excel con gráficos y a Power BI.">
+<meta name="keywords" content="azure latency test, aws latency test, azure speed test, test de latencia azure, test de velocidad aws, estado de azure, caída de azure, microsoft 365 status, power bi, excel">
+<meta name="author" content="Juan Raúl Ruiz">
+<link rel="canonical" href="https://juanraul86.github.io/Eureka_CloudSpeed/">
+<meta name="theme-color" content="#0F6CBD">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Eureka_CloudSpeed">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="Eureka_CloudSpeed · Latencia, velocidad y estado de Azure y AWS">
+<meta property="og:description" content="Mide desde tu red la latencia y la velocidad a 75 regiones de Azure y AWS, detecta caídas globales y exporta a Excel y Power BI. Gratis y de código abierto.">
+<meta property="og:url" content="https://juanraul86.github.io/Eureka_CloudSpeed/">
+<meta property="og:image" content="https://juanraul86.github.io/Eureka_CloudSpeed/Docs/img/01-latencia-ranking.png">
+<meta property="og:image:width" content="1424">
+<meta property="og:image:height" content="861">
+<meta property="og:image:alt" content="Ranking de latencia en directo a regiones de Azure y AWS en Eureka_CloudSpeed">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eureka_CloudSpeed · Latencia, velocidad y estado de Azure y AWS">
+<meta name="twitter:description" content="Mide desde tu red la latencia y la velocidad a 75 regiones de Azure y AWS y detecta caídas globales. Gratis y de código abierto.">
+<meta name="twitter:image" content="https://juanraul86.github.io/Eureka_CloudSpeed/Docs/img/01-latencia-ranking.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Eureka_CloudSpeed",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "softwareVersion": "1.3.0",
+  "license": "https://opensource.org/licenses/MIT",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "description": "Aplicación portable para Windows que mide la latencia y la velocidad a regiones de Azure y AWS, muestra el estado de los servicios en la nube y exporta a Excel y Power BI.",
+  "url": "https://juanraul86.github.io/Eureka_CloudSpeed/",
+  "downloadUrl": "https://github.com/juanraul86/Eureka_CloudSpeed/releases/latest",
+  "codeRepository": "https://github.com/juanraul86/Eureka_CloudSpeed",
+  "screenshot": "https://juanraul86.github.io/Eureka_CloudSpeed/Docs/img/01-latencia-ranking.png",
+  "author": { "@type": "Person", "name": "Juan Raúl Ruiz", "url": "https://www.linkedin.com/in/juanraulruizbartran" }
+}
+</script>
+<style>
+:root{--bg:#F3F4F6;--sf:#fff;--bd:#E5E7EB;--tx:#1F2937;--mu:#6B7280;--ac:#0F6CBD;--hd:#0F6CBD;--hdtx:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#111827;--sf:#1F2937;--bd:#374151;--tx:#E5E7EB;--mu:#9CA3AF;--ac:#60A5FA;--hd:#0B3A66;--hdtx:#fff}}
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;margin:0;color:var(--tx);background:var(--bg);line-height:1.6}
+header{background:var(--hd);color:var(--hdtx);padding:48px 16px 40px;text-align:center}
+header h1{margin:0 0 8px;font-size:2.2rem}
+header p{margin:0 auto;max-width:760px;font-size:1.1rem}
+.btn{display:inline-block;margin:20px 6px 0;padding:12px 22px;border-radius:6px;background:#fff;color:#0F6CBD;font-weight:600;text-decoration:none}
+.btn.alt{background:transparent;color:#fff;border:2px solid #fff}
+main{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+h2{margin-top:40px;color:var(--ac)}
+li{margin:6px 0}
+a{color:var(--ac)}
+code{background:var(--sf);border:1px solid var(--bd);border-radius:4px;padding:1px 5px}
+.hero{display:block;width:100%;height:auto;margin:-20px auto 0;border-radius:8px;border:1px solid var(--bd);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:16px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--mu)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+figure{margin:0;background:var(--sf);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+figure img{display:block;width:100%;height:auto}
+figcaption{padding:8px 12px;color:var(--mu);font-size:.9rem}
+.docs{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.docs a{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:8px 14px;text-decoration:none}
+footer{text-align:center;padding:24px 16px;color:var(--mu);font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Eureka_CloudSpeed</h1>
+<p>Mide desde tu propia red la latencia y la velocidad a <strong>75 regiones de Azure y AWS</strong>, comprueba el estado de la nube y exporta los resultados a Excel con gráficos y a Power BI. Gratis, portable y de código abierto para Windows.</p>
+<a class="btn" href="https://github.com/juanraul86/Eureka_CloudSpeed/releases/latest">Descargar la última versión</a>
+<a class="btn alt" href="https://github.com/juanraul86/Eureka_CloudSpeed">Código en GitHub</a>
+</header>
+<main>
+<img class="hero" src="Docs/img/01-latencia-ranking.png" width="1424" height="861" alt="Ranking de latencia en directo a regiones de Azure y AWS en Eureka_CloudSpeed">
+
+<h2>Qué hace</h2>
+<div class="grid">
+<div class="card"><h3>Latencia en directo</h3><p>Ranking de 41 regiones de Azure y 34 de AWS con mediana, P95, jitter y pérdida, mapa mundial, evolución en el tiempo y comparativa Azure frente a AWS.</p></div>
+<div class="card"><h3>Estado de la nube</h3><p>Estado oficial de Azure, Microsoft 365, Power Platform, AWS, Google Cloud, GitHub y Cloudflare, comparado con comprobaciones propias desde tu red. Detecta caídas globales aunque la página de estado del proveedor también haya caído.</p></div>
+<div class="card"><h3>Test de velocidad</h3><p>Descarga, subida y latencia con carga contra tu propio almacenamiento en Azure o AWS. Los scripts lo crean, miden y lo borran al terminar para no generar cargos.</p></div>
+<div class="card"><h3>Excel y Power BI</h3><p>Libros de Excel con gráficos nativos y editables sin necesitar Excel, y exportación a Power BI Desktop gratuito con modelo en estrella y medidas DAX.</p></div>
+<div class="card"><h3>Precios y regiones</h3><p>Precios de máquinas virtuales de Azure y EC2, precios de modelos de IA, latencia publicada entre regiones de Azure, zonas de disponibilidad y nubes soberanas.</p></div>
+<div class="card"><h3>Red e IP</h3><p>A qué servicio y región de Azure o AWS pertenece una IP o un dominio, y rangos de IP por servicio y región listos para copiar.</p></div>
+</div>
+
+<h2>Capturas</h2>
+<div class="shots">
+<figure><img src="Docs/img/00-estado.png" width="1424" height="861" loading="lazy" alt="Estado de los servicios de Azure, Microsoft 365, AWS y otros"><figcaption>Estado de servicios y diagnóstico de caídas</figcaption></figure>
+<figure><img src="Docs/img/04-latencia-mapa.png" width="1424" height="861" loading="lazy" alt="Mapa mundial de latencia a regiones de Azure y AWS"><figcaption>Mapa de latencia</figcaption></figure>
+<figure><img src="Docs/img/06-velocidad.png" width="1424" height="861" loading="lazy" alt="Test de velocidad de descarga y subida a una región de la nube"><figcaption>Test de velocidad</figcaption></figure>
+<figure><img src="Docs/img/09-precios-vm.png" width="1424" height="861" loading="lazy" alt="Precios de máquinas virtuales de Azure y AWS por región"><figcaption>Precios de máquinas virtuales</figcaption></figure>
+</div>
+
+<h2>Cómo empezar</h2>
+<ol>
+<li>Descarga <code>Eureka_CloudSpeed_Portable.exe</code> desde la <a href="https://github.com/juanraul86/Eureka_CloudSpeed/releases/latest">página de la última versión</a> y, si quieres, comprueba su huella SHA-256 en las notas de la versión.</li>
+<li>Ejecútalo. No necesita permisos de administrador ni instala nada.</li>
+<li>Elige las nubes y regiones y pulsa <strong>Iniciar</strong>.</li>
+</ol>
+<p>Requisitos: Windows 10 u 11 con Windows PowerShell 5.1 (incluido en Windows) y salida a Internet por el puerto 443.</p>
+
+<h2>Privacidad y seguridad</h2>
+<p>No incluye telemetría: los resultados y el histórico se guardan solo en tu equipo y se pueden borrar desde la propia aplicación. Las direcciones del test de velocidad se guardan cifradas con DPAPI. La única consulta opcional a un servicio externo es la de «Tu conexión» (ipinfo.io), y solo al pulsar el botón.</p>
+<p>Los ejecutables todavía no están firmados digitalmente, así que Windows puede mostrar «Editor desconocido» y Smart App Control puede bloquearlos. En ese caso usa <code>Eureka_CloudSpeed.cmd</code> desde el código fuente. Está prevista la firma gratuita con <a href="https://signpath.org">SignPath Foundation</a> para proyectos de código abierto con cierta difusión: si te resulta útil, darle una ⭐ en <a href="https://github.com/juanraul86/Eureka_CloudSpeed">GitHub</a> o compartirlo ayuda a conseguirlo.</p>
+
+<h2>Documentación</h2>
+<div class="docs">
+<a href="Docs/Manual-de-usuario.html">Manual de uso</a>
+<a href="Docs/Documentacion-tecnica.html">Documentación técnica</a>
+<a href="Docs/Revision-seguridad-y-confidencialidad.html">Revisión de seguridad</a>
+<a href="Docs/Bitacora-de-versiones.html">Bitácora de versiones</a>
+<a href="https://github.com/juanraul86/Eureka_CloudSpeed/blob/main/CHANGELOG.md">Cambios</a>
+</div>
+
+<h2 lang="en">In English</h2>
+<p lang="en"><strong>Eureka_CloudSpeed</strong> is a free, portable, open-source (MIT) Windows app that measures latency and speed from your own network to 75 Azure and AWS regions, shows the status of Azure, Microsoft 365, AWS and other providers (detecting global outages even when the status page itself is down) and exports to Excel with native charts and to Power BI Desktop. The interface is in Spanish for now. <a href="https://github.com/juanraul86/Eureka_CloudSpeed/releases/latest">Download the latest version</a>.</p>
+
+<p>¿Te interesa preparar equipos Windows 11? Prueba también <a href="https://juanraul86.github.io/Eureka_Utils/">Eureka_Utils</a>.</p>
+</main>
+<footer>Eureka_CloudSpeed · por <a href="https://www.linkedin.com/in/juanraulruizbartran">Juan Raúl Ruiz</a> · Licencia MIT · Código desarrollado con ayuda de un asistente de IA (Claude Code)</footer>
+</body>
+</html>

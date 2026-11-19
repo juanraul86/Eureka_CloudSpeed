@@ -10,3 +10,6 @@ Eureka_CloudSpeed_Datos/
 Dist/
 Build/obj/
 *.exe
+
+# Borradores de difusión (Reddit, etc.)
+Difusion/
